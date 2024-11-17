@@ -13,6 +13,6 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(new Dimension(920, 550));
-        frame.add(new MainFrame());
+        //frame.add(new MainFrame());
     }
 }
