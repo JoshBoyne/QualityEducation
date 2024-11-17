@@ -2,11 +2,12 @@ package GUIComponents;
 
 import javax.swing.*;
 import java.awt.*;
+import prototypetest.Home;
 
 public class MainFrame extends JPanel {
-
-    public MainFrame() {
-
+    public Home restOfApp;
+    public MainFrame(Home home) {
+        this.restOfApp = home;
         this.setSize(new Dimension(920, 550));
         this.setLayout(new BorderLayout());
 
@@ -27,6 +28,10 @@ public class MainFrame extends JPanel {
         south.setBackground(Color.white);
         south.setPreferredSize(new Dimension(10, 10));
         this.add(south, BorderLayout.SOUTH);
+    }
+    
+    public void test() {
+        
     }
 
 }
