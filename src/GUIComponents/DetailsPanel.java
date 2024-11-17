@@ -7,7 +7,7 @@ public class DetailsPanel extends JPanel {
 
     public DetailsPanel() {
         this.setBackground(Color.yellow);
-        this.setPreferredSize(new Dimension(600, 180));
+        this.setPreferredSize(new Dimension(600, 250));
         this.setLayout(new BorderLayout());
         JPanel avatar = new JPanel();
         avatar.setPreferredSize(new Dimension(50, 50));
@@ -41,7 +41,7 @@ public class DetailsPanel extends JPanel {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.blue);
-        centerPanel.setPreferredSize(new Dimension(100, 50));
+        centerPanel.setPreferredSize(new Dimension(100, 25));
 
         //
         JPanel one = new JPanel();
