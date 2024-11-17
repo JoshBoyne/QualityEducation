@@ -9,7 +9,7 @@ package prototypetest;
  * @author jason, Josh, Owen
  */
 public class Home extends javax.swing.JPanel {
-
+    
    public static void main (String[] args) {
          
    }
@@ -38,6 +38,7 @@ public class Home extends javax.swing.JPanel {
 
         quizBG = new javax.swing.ButtonGroup();
         adminQuizBG = new javax.swing.ButtonGroup();
+        mainFrame1 = new GUIComponents.MainFrame(this);
         StartPanel = new javax.swing.JPanel();
         IconP = new javax.swing.JPanel();
         Bicon = new javax.swing.JLabel();
@@ -180,6 +181,9 @@ public class Home extends javax.swing.JPanel {
         setBackground(new java.awt.Color(204, 204, 204));
         setPreferredSize(new java.awt.Dimension(920, 550));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        mainFrame1.setVisible(false);
+        add(mainFrame1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         StartPanel.setBackground(new java.awt.Color(204, 204, 204));
         StartPanel.setForeground(new java.awt.Color(255, 204, 153));
@@ -368,6 +372,11 @@ public class Home extends javax.swing.JPanel {
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel10MouseClicked(evt);
+            }
+        });
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/prototypetest/progress.png"))); // NOI18N
 
@@ -413,6 +422,7 @@ public class Home extends javax.swing.JPanel {
         HomePanel.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 920, 180));
 
         add(HomePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 920, 550));
+        HomePanel.getAccessibleContext().setAccessibleName("");
 
         LearningPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -1352,7 +1362,7 @@ public class Home extends javax.swing.JPanel {
     }//GEN-LAST:event_EmailInputActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here://Main button after creating account
         CreateAccPanel.setVisible(false);
         HomePanel.setVisible(true);
     }//GEN-LAST:event_jToggleButton1ActionPerformed
@@ -1430,6 +1440,12 @@ public class Home extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
+    private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
+        HomePanel.setVisible(false);
+        mainFrame1.setVisible(true);
+        
+    }//GEN-LAST:event_jPanel10MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AccountIDInput;
@@ -1437,7 +1453,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JPanel AdminPanel;
     private javax.swing.JPanel AdminQuizPanel;
     private javax.swing.JPanel AnswerPanel;
-    private javax.swing.JLabel BACKtoStart;
+    public javax.swing.JLabel BACKtoStart;
     private javax.swing.JLabel BACKtoStart1;
     private javax.swing.JLabel Bicon;
     private javax.swing.JButton CFconfirmButton;
@@ -1447,7 +1463,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JPanel CreateAccPanel;
     private javax.swing.JTextField EmailInput;
     private javax.swing.JTextField Emailfield;
-    private javax.swing.JPanel HomePanel;
+    public javax.swing.JPanel HomePanel;
     private javax.swing.JPanel IconP;
     private javax.swing.JLabel LBback;
     private javax.swing.JPanel LearnPanel;
@@ -1529,7 +1545,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
+    public javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
@@ -1563,6 +1579,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
+    private GUIComponents.MainFrame mainFrame1;
     private javax.swing.ButtonGroup quizBG;
     private javax.swing.JButton quizNextBTN;
     private javax.swing.JButton quizPrevBTN;
