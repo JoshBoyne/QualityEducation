@@ -2,6 +2,8 @@ package GUIComponents;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class QotdPanel extends JPanel {
     Dimension dimensions = new Dimension(400, 200);
@@ -47,7 +49,7 @@ public class QotdPanel extends JPanel {
 
 
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 3; i++) {
 
             buttonConst.gridx = i;
             buttonConst.gridy = 0;
@@ -70,8 +72,22 @@ public class QotdPanel extends JPanel {
                 break;
             }
             buttonsPlaceholder.add(new CustomButton(letter), buttonConst);
-        }
 
+        }
+            buttonConst.gridx = 3;
+            JButton tempBack = new JButton("BACK");
+            tempBack.setPreferredSize(new Dimension(100, 100));
+            tempBack.setBackground(Color.red);
+            tempBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                MainFrame home = (MainFrame) SwingUtilities.getAncestorOfClass(MainFrame.class, buttonsPlaceholder);
+                System.out.println(home.getClass().getName());
+                home.restOfApp.HomePanel.setVisible(true);
+                home.setVisible(false);
+            }
+        });
+            buttonsPlaceholder.add(tempBack, buttonConst);
 
 
         this.add(buttonsPlaceholder, BorderLayout.SOUTH);
