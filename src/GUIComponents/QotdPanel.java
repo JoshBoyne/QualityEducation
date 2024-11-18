@@ -1,14 +1,15 @@
 package GUIComponents;
 
+import Main.Styles;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class QotdPanel extends JPanel {
-    Dimension dimensions = new Dimension(400, 200);
+    Dimension dimensions = new Dimension(400, 220);
     public QotdPanel() {
-     //   this.setBackground(Color.red);
+     // this.setBackground(Color.red);
         this.setPreferredSize(dimensions);
         this.setMaximumSize(dimensions);
         this.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -30,14 +31,14 @@ public class QotdPanel extends JPanel {
         question.setHorizontalAlignment(SwingConstants.CENTER);
         question.setVerticalAlignment(SwingConstants.CENTER);
         question.setFont(new Font("Arial", Font.BOLD, 14));
-        question.setBackground(Color.red);
+        question.setBackground(Styles.secondarySalmon);
         question.setOpaque(true);
         this.add(question, BorderLayout.CENTER);
 
         //
         //BUttons for Awnsers
         JPanel buttonsPlaceholder = new JPanel();
-        buttonsPlaceholder.setBackground(Color.red);
+        buttonsPlaceholder.setBackground(Styles.secondarySalmon);
         buttonsPlaceholder.setPreferredSize(new Dimension(600, 50));
         buttonsPlaceholder.setLayout(new GridBagLayout());
         GridBagConstraints buttonConst = new GridBagConstraints();
@@ -104,7 +105,7 @@ public class QotdPanel extends JPanel {
 
 
         //Draws the rounded panel with borders.
-        graphics.setColor(Color.red);
+        graphics.setColor(Styles.secondarySalmon);
         graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint background
         graphics.setColor(getForeground());
         graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint border
