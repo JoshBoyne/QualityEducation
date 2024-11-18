@@ -1,20 +1,21 @@
 package GUIComponents;
 
+import Main.Styles;
 import javax.swing.*;
 import java.awt.*;
 
 public class DailyQuestsContainer extends JPanel {
 
-    Dimension dimensions = new Dimension(225, 430);
+    Dimension dimensions = new Dimension(225, 540);
 
     public DailyQuestsContainer() {
 
         this.setPreferredSize(dimensions);
-        this.setBackground(Color.white);
+        this.setBackground(Styles.greyBackground);
         this.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 20));
         JPanel containerPanel = new JPanel();
         containerPanel.setPreferredSize(dimensions);
-        //containerPanel.setBackground(Color.BLACK);
+        containerPanel.setBackground(Styles.greyBackground);
         BoxLayout thisLayout = new BoxLayout(containerPanel, BoxLayout.Y_AXIS);
         containerPanel.setLayout(thisLayout);
         containerPanel.add(Box.createVerticalStrut(15));
@@ -38,8 +39,7 @@ public class DailyQuestsContainer extends JPanel {
         quest4.setAlignmentX(Component.LEFT_ALIGNMENT);
         containerPanel.add(quest4);
         containerPanel.add(Box.createVerticalStrut(10));
-        containerPanel.setBackground(Color.white);
-
+     
 
         this.add(containerPanel);
     }
