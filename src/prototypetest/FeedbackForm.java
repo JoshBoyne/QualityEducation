@@ -10,6 +10,10 @@ package prototypetest;
  */
 public class FeedbackForm {
     
+<<<<<<< HEAD
 
 
 }
+=======
+}
+>>>>>>> f03478a (Initial commit for PrototypeTest)

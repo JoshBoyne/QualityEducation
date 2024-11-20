@@ -4,17 +4,21 @@
  */
 package prototypetest;
 
+<<<<<<< HEAD
 import java.awt.Desktop;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+=======
+>>>>>>> f03478a (Initial commit for PrototypeTest)
 /**
  *
  * @author jason
  */
 public class RManager {
     
+<<<<<<< HEAD
     
         // Method to attach click event to the label and open a link
     public void enableLinkLabel(JLabel linkLabel, String url) {
@@ -41,4 +45,6 @@ public class RManager {
     }
 
     
+=======
+>>>>>>> f03478a (Initial commit for PrototypeTest)
 }
