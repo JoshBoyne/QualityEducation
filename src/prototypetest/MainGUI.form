@@ -1509,7 +1509,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="Welcome!&#xa;To start the quiz please select the &quot;Submit&quot; button.&#xa;&#xa;To answer the questions please choose one of the radio buttons below (A, B, C, D).&#xa;&#xa;Please then press &quot;Submit&quot; to confirm your answer.&#xa;&#xa;Thank You!"/>
+                    <Property name="text" type="java.lang.String" value="Welcome!&#xa;To start the quiz please select the &quot;Submit Topic&quot; button.&#xa;&#xa;To answer the questions please choose one of the radio buttons below (A, B, C, D).&#xa;&#xa;Please then press &quot;Submit&quot; to confirm your answer, then go onto the next Question.&#xa;&#xa;Thank You!"/>
                   </Properties>
                 </Component>
               </SubComponents>

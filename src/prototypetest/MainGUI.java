@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import Quiz.Question;
+import Quiz.Result;
 /**
  *
  * @author jason, Josh, Owen
@@ -17,10 +18,10 @@ import Quiz.Question;
 public class MainGUI extends javax.swing.JPanel {
     
   // Instance variables for managing topics, questions, and user answers
-    private Map<String, List<Question>> topics;
-    private List<Question> currentQuestions;
-    private int currentQuestionIndex;
-    private Map<Integer, String> userAnswers;
+    private List<Question> currentQuestions; // List of questions for the selected topic
+private int currentQuestionIndex;
+private Map<Integer, String> userAnswers;
+private Result quizResult;
 
     
     
@@ -29,8 +30,11 @@ public class MainGUI extends javax.swing.JPanel {
     
     public MainGUI() {
         initComponents();
-        initializeTopics();
+        currentQuestions = new ArrayList<>(); 
         initializeButtonActions();
+        currentQuestionIndex = 0;    
+        userAnswers = new HashMap<>();
+         quizResult = new Result();
         RManager rManager = new RManager(); //instance of RManager
         rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
          
@@ -56,105 +60,88 @@ public class MainGUI extends javax.swing.JPanel {
     
     }
  // Method to initialize topics and questions
-private void initializeTopics() {
-    topics = new HashMap<>();
-    userAnswers = new HashMap<>();
 
-    List<Question> topic1Questions = new ArrayList<>();
-    topic1Questions.add(new Question("What is 2 + 2?", "4", "3", "5", "2", "A"));
-    topic1Questions.add(new Question("What is 3 x 3?", "6", "9", "3", "12", "B"));
-
-    List<Question> topic2Questions = new ArrayList<>();
-    topic2Questions.add(new Question("What is the capital of France?", "Berlin", "Paris", "Rome", "Madrid", "B"));
-
-    topics.put("Topic 1", topic1Questions);
-    topics.put("Topic 2", topic2Questions);
-}
 
 // Method to load the current question into the GUI
 private void loadQuestion() {
-    if (currentQuestions != null && !currentQuestions.isEmpty()) {
-        Question currentQuestion = currentQuestions.get(currentQuestionIndex);
+    try {
+        if (currentQuestions != null && !currentQuestions.isEmpty()) {
+            Question currentQuestion = currentQuestions.get(currentQuestionIndex);
 
-        // Display the current question and options
-        quizTA1.setText(currentQuestion.getText() + "\n\n" +
-                        "A: " + currentQuestion.getOptionA() + "\n" +
-                        "B: " + currentQuestion.getOptionB() + "\n" +
-                        "C: " + currentQuestion.getOptionC() + "\n" +
-                        "D: " + currentQuestion.getOptionD());
+            // Display the current question and options
+            quizTA1.setText(currentQuestion.getText() + "\n\n" +
+                            "A: " + currentQuestion.getOptionA() + "\n" +
+                            "B: " + currentQuestion.getOptionB() + "\n" +
+                            "C: " + currentQuestion.getOptionC() + "\n" +
+                            "D: " + currentQuestion.getOptionD());
 
-        // Enable radio buttons
-        aBTN.setEnabled(true);
-        bBTN.setEnabled(true);
-        cBTN.setEnabled(true);
-        dBTN.setEnabled(true);
+            // Clear radio button selection
+            quizBG.clearSelection();
 
-        // Clear radio button selection
-        quizBG.clearSelection();
-
-        // Restore saved answer
-        String savedAnswer = userAnswers.get(currentQuestionIndex);
-        if (savedAnswer != null) {
-            switch (savedAnswer) {
-                case "A": aBTN.setSelected(true); break;
-                case "B": bBTN.setSelected(true); break;
-                case "C": cBTN.setSelected(true); break;
-                case "D": dBTN.setSelected(true); break;
+            // Restore saved answer
+            String savedAnswer = userAnswers.get(currentQuestionIndex);
+            if (savedAnswer != null) {
+                switch (savedAnswer) {
+                    case "A": aBTN.setSelected(true); break;
+                    case "B": bBTN.setSelected(true); break;
+                    case "C": cBTN.setSelected(true); break;
+                    case "D": dBTN.setSelected(true); break;
+                }
             }
         }
-    } else {
-        // No questions available
-        quizTA1.setText("No questions available.");
-        
-        // Disable radio buttons
-        aBTN.setEnabled(false);
-        bBTN.setEnabled(false);
-        cBTN.setEnabled(false);
-        dBTN.setEnabled(false);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error loading question: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+private void enableQuizControls() {
+    // Enable radio buttons for answer selection
+    aBTN.setEnabled(true);
+    bBTN.setEnabled(true);
+    cBTN.setEnabled(true);
+    dBTN.setEnabled(true);
 
+    // Enable navigation buttons for next and previous questions
+    quizNextBTN.setEnabled(true);
+    quizPrevBTN.setEnabled(true);
+
+    // Enable the submit button for submitting the answers
+    quizSubmitBTN1.setEnabled(true);
+}
 // Method to save the selected answer
 private void saveAnswer() {
-    if (currentQuestions == null) {
-        // Quiz not started, do nothing or show a message
-        return;
-    }
-
-    try {
-        if (aBTN.isSelected()) {
-            userAnswers.put(currentQuestionIndex, "A");
-        } else if (bBTN.isSelected()) {
-            userAnswers.put(currentQuestionIndex, "B");
-        } else if (cBTN.isSelected()) {
-            userAnswers.put(currentQuestionIndex, "C");
-        } else if (dBTN.isSelected()) {
-            userAnswers.put(currentQuestionIndex, "D");
-        }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error saving answer: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
+    if (aBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "A");
+    } else if (bBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "B");
+    } else if (cBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "C");
+    } else if (dBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "D");
     }
 }
 
 // Action for the Submit Topic button
 private void handleSubmitTopic() {
     submitTopicBTN.addActionListener(e -> {
-        String selectedTopic = (String) topicCB.getSelectedItem();
-        currentQuestions = topics.get(selectedTopic);
-        currentQuestionIndex = 0;
-        userAnswers.clear();
-        loadQuestion();
+        String selectedTopic = (String) topicCB.getSelectedItem();  // Get the selected topic
+        currentQuestions = Question.getQuestionsByTopic(selectedTopic);  // Fetch questions from the static method
+        currentQuestionIndex = 0;  // Start from the first question
+        userAnswers.clear();  // Clear any previous answers
+        loadQuestion();  // Load the first question into the GUI
+        enableQuizControls();  // Enable radio buttons and navigation
     });
 }
 
 // Action for the Next button
 private void handleNextButton() {
     quizNextBTN.addActionListener(e -> {
-        saveAnswer();
+        saveAnswer();  // Save the current answer
+
         if (currentQuestionIndex < currentQuestions.size() - 1) {
-            currentQuestionIndex++;
-            loadQuestion();
+            currentQuestionIndex++;  // Move to the next question
+            loadQuestion();  // Load the next question
+        } else {
+            JOptionPane.showMessageDialog(this, "You are on the last question.", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
     });
 }
@@ -162,10 +149,13 @@ private void handleNextButton() {
 // Action for the Previous button
 private void handlePreviousButton() {
     quizPrevBTN.addActionListener(e -> {
-        saveAnswer();
+        saveAnswer();  // Save the current answer
+
         if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            loadQuestion();
+            currentQuestionIndex--;  // Go to the previous question
+            loadQuestion();  // Load the previous question
+        } else {
+            JOptionPane.showMessageDialog(this, "You are on the first question.", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
     });
 }
@@ -173,8 +163,8 @@ private void handlePreviousButton() {
 // Action for the Submit Answers button
 private void handleSubmitAnswers() {
     quizSubmitBTN1.addActionListener(e -> {
-        saveAnswer();
-        JOptionPane.showMessageDialog(this, "Answers Submitted: " + userAnswers);
+        saveAnswer();  // Save the current answer
+        JOptionPane.showMessageDialog(this, "Answers Submitted: " + userAnswers);  // Show submitted answers
     });
 }
 
@@ -185,7 +175,10 @@ private void initializeButtonActions() {
     handlePreviousButton();
     handleSubmitAnswers();
 }
-    
+    private void displayResults() {
+    String summary = quizResult.getSummary();
+    quizTA1.setText(summary); // Display summary in the text area
+}
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1013,7 +1006,7 @@ private void initializeButtonActions() {
 
         quizTA1.setColumns(20);
         quizTA1.setRows(5);
-        quizTA1.setText("Welcome!\nTo start the quiz please select the \"Submit\" button.\n\nTo answer the questions please choose one of the radio buttons below (A, B, C, D).\n\nPlease then press \"Submit\" to confirm your answer.\n\nThank You!");
+        quizTA1.setText("Welcome!\nTo start the quiz please select the \"Submit Topic\" button.\n\nTo answer the questions please choose one of the radio buttons below (A, B, C, D).\n\nPlease then press \"Submit\" to confirm your answer, then go onto the next Question.\n\nThank You!");
         jScrollPane3.setViewportView(quizTA1);
 
         QuizPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 540, 150));
@@ -1623,13 +1616,9 @@ private void initializeButtonActions() {
 
     private void quizPrevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizPrevBTNActionPerformed
         // TODO add your handling code here:
-          if (currentQuestions == null) {
-        JOptionPane.showMessageDialog(this, "Please start the quiz by selecting a topic and pressing Submit.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        saveAnswer();
 
-    saveAnswer(); // Save the current answer
-
+    // Check if we're not at the first question
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--; // Move to the previous question
         loadQuestion(); // Load the previous question
@@ -1640,13 +1629,9 @@ private void initializeButtonActions() {
 
     private void quizNextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizNextBTNActionPerformed
         // TODO add your handling code here:
-       if (currentQuestions == null) {
-        JOptionPane.showMessageDialog(this, "Please start the quiz by selecting a topic and pressing Submit.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        saveAnswer();
 
-    saveAnswer(); // Save the current answer
-
+   
     if (currentQuestionIndex < currentQuestions.size() - 1) {
         currentQuestionIndex++; // Move to the next question
         loadQuestion(); // Load the next question
@@ -1660,6 +1645,7 @@ private void initializeButtonActions() {
      if (currentQuestions == null) {
         JOptionPane.showMessageDialog(this, "Please start the quiz by selecting a topic and pressing Submit.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
+        
     }
 
     saveAnswer(); // Save the current answer
@@ -1668,10 +1654,12 @@ private void initializeButtonActions() {
         currentQuestionIndex++; // Move to the next question
         loadQuestion(); // Load the next question
     } else {
-        // If on the last question, display a completion message and disable buttons
-        JOptionPane.showMessageDialog(this, "You have completed the quiz!");
-        
-        // Optionally, disable buttons after quiz completion
+        // End of the quiz
+        quizResult.calculateScore(userAnswers, currentQuestions); // Calculate the score
+        String summary = quizResult.getSummary(); // Get the summary
+        JOptionPane.showMessageDialog(this, summary, "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
+
+        // Disable navigation and answer buttons after completion
         aBTN.setEnabled(false);
         bBTN.setEnabled(false);
         cBTN.setEnabled(false);
@@ -1679,30 +1667,40 @@ private void initializeButtonActions() {
         quizNextBTN.setEnabled(false);
         quizPrevBTN.setEnabled(false);
         quizSubmitBTN1.setEnabled(false);
+
+        // Optionally, show the results on the GUI
+        quizTA1.setText(summary);
     }
     }//GEN-LAST:event_quizSubmitBTN1ActionPerformed
 
     private void submitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitTopicBTNActionPerformed
-        // TODO add your handling code here:
-          String selectedTopic = (String) topicCB.getSelectedItem();
-    currentQuestions = topics.get(selectedTopic);
-    currentQuestionIndex = 0;
-    userAnswers.clear();
-
-    if (currentQuestions != null && !currentQuestions.isEmpty()) {
-        loadQuestion(); // Load the first question
-
-        // Enable radio buttons and navigation buttons
-        aBTN.setEnabled(true);
-        bBTN.setEnabled(true);
-        cBTN.setEnabled(true);
-        dBTN.setEnabled(true);
-        quizNextBTN.setEnabled(true);
-        quizPrevBTN.setEnabled(true);
-        quizSubmitBTN1.setEnabled(true);
-    } else {
-        JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
+       // Initialize userAnswers if not already done
+    if (userAnswers == null) {
+        userAnswers = new HashMap<>();
     }
+
+    // Get selected topic
+    String selectedTopic = (String) topicCB.getSelectedItem();
+
+    // Fetch questions for the selected topic
+    currentQuestions = Question.getQuestionsByTopic(selectedTopic);
+
+    // Ensure the list is not null or empty
+    if (currentQuestions == null || currentQuestions.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Reset index and clear previous answers
+    currentQuestionIndex = 0;
+    System.out.println("userAnswers initialized: " + (userAnswers != null));
+    userAnswers.clear(); // Safe because it's initialized above
+
+    // Load the first question
+    loadQuestion();
+
+    // Enable the quiz controls
+    enableQuizControls();
     }//GEN-LAST:event_submitTopicBTNActionPerformed
 
 
