@@ -4,6 +4,11 @@
  */
 package prototypetest;
 
+import Main.Account;
+import Main.IOHandler;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -32,6 +37,12 @@ public class PrototypeTest {
 
                 
                 frame.setVisible(true);
+                
+                try {
+                    Account test = new Account("a", "b");
+                } catch (IOException ex) {
+                    Logger.getLogger(PrototypeTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
