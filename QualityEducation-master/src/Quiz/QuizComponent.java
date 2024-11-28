@@ -2,21 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package prototypetest;
+package Quiz;
 
 /**
  *
- * @author jason
+ * @author Josh
  */
-public class FeedbackForm {
-    
-
-
-
+public abstract class QuizComponent {
+    public abstract void displayComponent();
 }
-
-
-
-}
-}
-

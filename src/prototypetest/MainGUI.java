@@ -4,61 +4,186 @@
  */
 package prototypetest;
 
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import Quiz.Question;
+import Quiz.Result;
 /**
  *
-<<<<<<< HEAD
  * @author jason, Josh, Owen
  */
-public class Home extends javax.swing.JPanel {
+public class MainGUI extends javax.swing.JPanel {
     
-=======
- * @author jason
- */
-public class Home extends javax.swing.JPanel {
-
->>>>>>> f03478a (Initial commit for PrototypeTest)
-   public static void main (String[] args) {
-         
-   }
+  // Instance variables for managing topics, questions, and user answers
+    private List<Question> currentQuestions; // List of questions for the selected topic
+private int currentQuestionIndex;
+private Map<Integer, String> userAnswers;
+private Result quizResult;
 
     
-    public Home() {
+    
+    
+    
+    
+    public MainGUI() {
         initComponents();
-        
-<<<<<<< HEAD
+        currentQuestions = new ArrayList<>(); 
+        initializeButtonActions();
+        currentQuestionIndex = 0;    
+        userAnswers = new HashMap<>();
+         quizResult = new Result();
         RManager rManager = new RManager(); //instance of RManager
-         rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
+        rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
          
-=======
-        
->>>>>>> f03478a (Initial commit for PrototypeTest)
         HomePanel.setVisible(false);
         StartPanel.setVisible(true);
         CreateAccPanel.setVisible(false);
         LearningPanel.setVisible(false);
-<<<<<<< HEAD
         QuizPanel.setVisible(false);
         AdminPanel.setVisible(false);
         AdminQuizPanel.setVisible(false);
+        
+        
+        quizTA1.setEditable(false);
+        
+        
+        aBTN.setEnabled(false);
+        bBTN.setEnabled(false);
+        cBTN.setEnabled(false);
+        dBTN.setEnabled(false);
+        quizNextBTN.setEnabled(false);
+        quizPrevBTN.setEnabled(false);
+        quizSubmitBTN1.setEnabled(false);
+    
     }
+ // Method to initialize topics and questions
 
-    
-    
-=======
+
+// Method to load the current question into the GUI
+private void loadQuestion() {
+    try {
+        if (currentQuestions != null && !currentQuestions.isEmpty()) {
+            Question currentQuestion = currentQuestions.get(currentQuestionIndex);
+
+            // Display the current question and options
+            quizTA1.setText(currentQuestion.getText() + "\n\n" +
+                            "A: " + currentQuestion.getOptionA() + "\n" +
+                            "B: " + currentQuestion.getOptionB() + "\n" +
+                            "C: " + currentQuestion.getOptionC() + "\n" +
+                            "D: " + currentQuestion.getOptionD());
+
+            // Clear radio button selection
+            quizBG.clearSelection();
+
+            // Restore saved answer
+            String savedAnswer = userAnswers.get(currentQuestionIndex);
+            if (savedAnswer != null) {
+                switch (savedAnswer) {
+                    case "A": aBTN.setSelected(true); break;
+                    case "B": bBTN.setSelected(true); break;
+                    case "C": cBTN.setSelected(true); break;
+                    case "D": dBTN.setSelected(true); break;
+                }
+            }
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error loading question: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+private void enableQuizControls() {
+    // Enable radio buttons for answer selection
+    aBTN.setEnabled(true);
+    bBTN.setEnabled(true);
+    cBTN.setEnabled(true);
+    dBTN.setEnabled(true);
 
+    // Enable navigation buttons for next and previous questions
+    quizNextBTN.setEnabled(true);
+    quizPrevBTN.setEnabled(true);
+
+    // Enable the submit button for submitting the answers
+    quizSubmitBTN1.setEnabled(true);
+}
+// Method to save the selected answer
+private void saveAnswer() {
+    if (aBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "A");
+    } else if (bBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "B");
+    } else if (cBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "C");
+    } else if (dBTN.isSelected()) {
+        userAnswers.put(currentQuestionIndex, "D");
+    }
+}
+
+// Action for the Submit Topic button
+private void handleSubmitTopic() {
+    submitTopicBTN.addActionListener(e -> {
+        String selectedTopic = (String) topicCB.getSelectedItem();  // Get the selected topic
+        currentQuestions = Question.getQuestionsByTopic(selectedTopic);  // Fetch questions from the static method
+        currentQuestionIndex = 0;  // Start from the first question
+        userAnswers.clear();  // Clear any previous answers
+        loadQuestion();  // Load the first question into the GUI
+        enableQuizControls();  // Enable radio buttons and navigation
+    });
+}
+
+// Action for the Next button
+private void handleNextButton() {
+    quizNextBTN.addActionListener(e -> {
+        saveAnswer();  // Save the current answer
+
+        if (currentQuestionIndex < currentQuestions.size() - 1) {
+            currentQuestionIndex++;  // Move to the next question
+            loadQuestion();  // Load the next question
+        } else {
+            JOptionPane.showMessageDialog(this, "You are on the last question.", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    });
+}
+
+// Action for the Previous button
+private void handlePreviousButton() {
+    quizPrevBTN.addActionListener(e -> {
+        saveAnswer();  // Save the current answer
+
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;  // Go to the previous question
+            loadQuestion();  // Load the previous question
+        } else {
+            JOptionPane.showMessageDialog(this, "You are on the first question.", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    });
+}
+
+// Action for the Submit Answers button
+private void handleSubmitAnswers() {
+    quizSubmitBTN1.addActionListener(e -> {
+        saveAnswer();  // Save the current answer
+        JOptionPane.showMessageDialog(this, "Answers Submitted: " + userAnswers);  // Show submitted answers
+    });
+}
+
+// Method to initialize button actions
+private void initializeButtonActions() {
+    handleSubmitTopic();
+    handleNextButton();
+    handlePreviousButton();
+    handleSubmitAnswers();
+}
+    private void displayResults() {
+    String summary = quizResult.getSummary();
+    quizTA1.setText(summary); // Display summary in the text area
+}
     
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
->>>>>>> f03478a (Initial commit for PrototypeTest)
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-<<<<<<< HEAD
         quizBG = new javax.swing.ButtonGroup();
         adminQuizBG = new javax.swing.ButtonGroup();
         mainFrame1 = new GUIComponents.MainFrame(this);
@@ -69,12 +194,6 @@ public class Home extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         jPanel15 = new javax.swing.JPanel();
         StartButton = new javax.swing.JButton();
-=======
-        StartPanel = new javax.swing.JPanel();
-        StartButton = new javax.swing.JButton();
-        jPanel14 = new javax.swing.JPanel();
-        jPanel15 = new javax.swing.JPanel();
->>>>>>> f03478a (Initial commit for PrototypeTest)
         HomePanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         BACKtoStart = new javax.swing.JLabel();
@@ -91,7 +210,6 @@ public class Home extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         LearningPanel = new javax.swing.JPanel();
-<<<<<<< HEAD
         LearnPanel = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         TabbedResource = new javax.swing.JTabbedPane();
@@ -148,7 +266,7 @@ public class Home extends javax.swing.JPanel {
         jPanel21 = new javax.swing.JPanel();
         jLabel30 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        quizTA = new javax.swing.JTextArea();
+        quizTA1 = new javax.swing.JTextArea();
         jLabel18 = new javax.swing.JLabel();
         aBTN = new javax.swing.JRadioButton();
         bBTN = new javax.swing.JRadioButton();
@@ -207,45 +325,18 @@ public class Home extends javax.swing.JPanel {
         jLabel33 = new javax.swing.JLabel();
         jLabel34 = new javax.swing.JLabel();
         jPanel31 = new javax.swing.JPanel();
-=======
-        jPanel1 = new javax.swing.JPanel();
-        LBback = new javax.swing.JLabel();
-        jPanel8 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jPanel12 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
-        CreateAccPanel = new javax.swing.JPanel();
-        jPanel16 = new javax.swing.JPanel();
-        jPanel17 = new javax.swing.JPanel();
-        CreateAccount = new javax.swing.JButton();
-        AccountNameInput = new javax.swing.JTextField();
-        AccountIDInput = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
->>>>>>> f03478a (Initial commit for PrototypeTest)
 
         setBackground(new java.awt.Color(204, 204, 204));
         setPreferredSize(new java.awt.Dimension(920, 550));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-<<<<<<< HEAD
         mainFrame1.setVisible(false);
         add(mainFrame1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-=======
->>>>>>> f03478a (Initial commit for PrototypeTest)
         StartPanel.setBackground(new java.awt.Color(204, 204, 204));
         StartPanel.setForeground(new java.awt.Color(255, 204, 153));
         StartPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-<<<<<<< HEAD
         IconP.setBackground(new java.awt.Color(252, 248, 248));
         IconP.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         IconP.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -284,42 +375,17 @@ public class Home extends javax.swing.JPanel {
 
         StartButton.setText("Start Up Now");
         StartButton.setToolTipText("Click Here To Start!");
-=======
-        StartButton.setText("Start Up Now");
->>>>>>> f03478a (Initial commit for PrototypeTest)
         StartButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         StartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 StartButtonActionPerformed(evt);
             }
         });
-<<<<<<< HEAD
-=======
-        StartPanel.add(StartButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 440, 250, 60));
-
-        jPanel14.setBackground(new java.awt.Color(51, 51, 51));
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 920, Short.MAX_VALUE)
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
-        );
-
-        StartPanel.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 920, 50));
-
-        jPanel15.setBackground(new java.awt.Color(255, 102, 102));
->>>>>>> f03478a (Initial commit for PrototypeTest)
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-<<<<<<< HEAD
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                 .addContainerGap(294, Short.MAX_VALUE)
                 .addComponent(StartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -331,13 +397,6 @@ public class Home extends javax.swing.JPanel {
                 .addContainerGap(94, Short.MAX_VALUE)
                 .addComponent(StartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26))
-=======
-            .addGap(0, 920, Short.MAX_VALUE)
-        );
-        jPanel15Layout.setVerticalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 180, Short.MAX_VALUE)
->>>>>>> f03478a (Initial commit for PrototypeTest)
         );
 
         StartPanel.add(jPanel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 920, 180));
@@ -424,14 +483,11 @@ public class Home extends javax.swing.JPanel {
         jPanel9.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/prototypetest/quiz.png"))); // NOI18N
-<<<<<<< HEAD
         jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel4MouseClicked(evt);
             }
         });
-=======
->>>>>>> f03478a (Initial commit for PrototypeTest)
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("Quizzes And Tests");
@@ -464,14 +520,11 @@ public class Home extends javax.swing.JPanel {
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-<<<<<<< HEAD
         jPanel10.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel10MouseClicked(evt);
             }
         });
-=======
->>>>>>> f03478a (Initial commit for PrototypeTest)
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/prototypetest/progress.png"))); // NOI18N
 
@@ -517,7 +570,6 @@ public class Home extends javax.swing.JPanel {
         HomePanel.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 920, 180));
 
         add(HomePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 920, 550));
-<<<<<<< HEAD
         HomePanel.getAccessibleContext().setAccessibleName("");
 
         LearningPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -740,11 +792,6 @@ public class Home extends javax.swing.JPanel {
 
         LearningPanel.add(LearnPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 880, 440));
 
-=======
-
-        LearningPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
->>>>>>> f03478a (Initial commit for PrototypeTest)
         jPanel1.setBackground(new java.awt.Color(255, 102, 102));
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -774,53 +821,6 @@ public class Home extends javax.swing.JPanel {
 
         LearningPanel.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 920, 50));
 
-<<<<<<< HEAD
-=======
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        LearningPanel.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 210, -1));
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        LearningPanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 130, 290, 290));
-
-        jTextField1.setText("Ratings");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-        LearningPanel.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 430, 290, -1));
-
-        jButton2.setText("jButton2");
-        LearningPanel.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 470, -1, -1));
-
-        jPanel12.setBackground(new java.awt.Color(153, 204, 255));
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
-        );
-
-        LearningPanel.add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, 400, 290));
-
-        jButton3.setText("jButton3");
-        LearningPanel.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, -1, -1));
-
-        jLabel2.setText("jLabel2");
-        LearningPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 400, -1));
-
-        jLabel3.setText("jLabel2");
-        LearningPanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 450, 400, -1));
-
->>>>>>> f03478a (Initial commit for PrototypeTest)
         jPanel13.setBackground(new java.awt.Color(255, 102, 102));
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -840,7 +840,6 @@ public class Home extends javax.swing.JPanel {
 
         CreateAccPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-<<<<<<< HEAD
         jPanel3.setBackground(new java.awt.Color(153, 153, 153));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(0, 0, 0), null));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -932,9 +931,6 @@ public class Home extends javax.swing.JPanel {
         CreateAccPanel.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 920, 180));
 
         jPanel16.setBackground(new java.awt.Color(51, 51, 51));
-=======
-        jPanel16.setBackground(new java.awt.Color(255, 102, 102));
->>>>>>> f03478a (Initial commit for PrototypeTest)
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
@@ -944,7 +940,6 @@ public class Home extends javax.swing.JPanel {
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-<<<<<<< HEAD
             .addGap(0, 50, Short.MAX_VALUE)
         );
 
@@ -1009,10 +1004,10 @@ public class Home extends javax.swing.JPanel {
         jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/prototypetest/dragon (1).png"))); // NOI18N
         QuizPanel1.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
 
-        quizTA.setColumns(20);
-        quizTA.setRows(5);
-        quizTA.setText("Questions will appear here, with the different answers\n");
-        jScrollPane3.setViewportView(quizTA);
+        quizTA1.setColumns(20);
+        quizTA1.setRows(5);
+        quizTA1.setText("Welcome!\nTo start the quiz please select the \"Submit Topic\" button.\n\nTo answer the questions please choose one of the radio buttons below (A, B, C, D).\n\nPlease then press \"Submit\" to confirm your answer, then go onto the next Question.\n\nThank You!");
+        jScrollPane3.setViewportView(quizTA1);
 
         QuizPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 540, 150));
 
@@ -1050,18 +1045,33 @@ public class Home extends javax.swing.JPanel {
         QuizPanel1.add(dBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 370, -1, -1));
 
         submitTopicBTN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        submitTopicBTN.setText("SUBMIT");
+        submitTopicBTN.setText("SUBMIT TOPIC");
         submitTopicBTN.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        submitTopicBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitTopicBTNActionPerformed(evt);
+            }
+        });
         QuizPanel1.add(submitTopicBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 280, 90, 30));
 
         quizPrevBTN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         quizPrevBTN.setText("PREVIOUS");
         quizPrevBTN.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        quizPrevBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quizPrevBTNActionPerformed(evt);
+            }
+        });
         QuizPanel1.add(quizPrevBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 370, 90, 30));
 
         quizNextBTN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         quizNextBTN.setText("NEXT");
         quizNextBTN.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        quizNextBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quizNextBTNActionPerformed(evt);
+            }
+        });
         QuizPanel1.add(quizNextBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 370, 90, 30));
 
         topicCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Topic 1", "Topic 2", "Topic 3", "Topic 4", " " }));
@@ -1071,6 +1081,11 @@ public class Home extends javax.swing.JPanel {
         quizSubmitBTN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         quizSubmitBTN1.setText("SUBMIT");
         quizSubmitBTN1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        quizSubmitBTN1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quizSubmitBTN1ActionPerformed(evt);
+            }
+        });
         QuizPanel1.add(quizSubmitBTN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 370, 90, 30));
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -1478,61 +1493,6 @@ public class Home extends javax.swing.JPanel {
         AdminQuizPanel.add(jPanel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 420, -1, -1));
 
         add(AdminQuizPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 920, 550));
-=======
-            .addGap(0, 250, Short.MAX_VALUE)
-        );
-
-        CreateAccPanel.add(jPanel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, -1, 250));
-
-        jPanel17.setBackground(new java.awt.Color(51, 51, 51));
-
-        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
-        jPanel17.setLayout(jPanel17Layout);
-        jPanel17Layout.setHorizontalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 920, Short.MAX_VALUE)
-        );
-        jPanel17Layout.setVerticalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
-        );
-
-        CreateAccPanel.add(jPanel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        CreateAccount.setText("Create Account");
-        CreateAccount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateAccountActionPerformed(evt);
-            }
-        });
-        CreateAccPanel.add(CreateAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 299, -1, -1));
-
-        AccountNameInput.setText("jTextField2");
-        AccountNameInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AccountNameInputActionPerformed(evt);
-            }
-        });
-        CreateAccPanel.add(AccountNameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 137, 338, -1));
-
-        AccountIDInput.setText("jTextField2");
-        AccountIDInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AccountIDInputActionPerformed(evt);
-            }
-        });
-        CreateAccPanel.add(AccountIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 83, 338, -1));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jLabel5.setText("Account ID:");
-        CreateAccPanel.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 57, -1, -1));
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jLabel12.setText("Account Name:");
-        CreateAccPanel.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 111, -1, -1));
-
-        add(CreateAccPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
->>>>>>> f03478a (Initial commit for PrototypeTest)
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -1540,13 +1500,6 @@ public class Home extends javax.swing.JPanel {
        HomePanel.setVisible(false);
     }//GEN-LAST:event_jLabel1MouseClicked
 
-<<<<<<< HEAD
-=======
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartButtonActionPerformed
     HomePanel.setVisible(false);
        StartPanel.setVisible(false);
@@ -1554,15 +1507,6 @@ public class Home extends javax.swing.JPanel {
                CreateAccPanel.setVisible(true);
     }//GEN-LAST:event_StartButtonActionPerformed
 
-<<<<<<< HEAD
-=======
-    private void CreateAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateAccountActionPerformed
-         
-         HomePanel.setVisible(true);
-         CreateAccPanel.setVisible(false);
-    }//GEN-LAST:event_CreateAccountActionPerformed
-
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private void LBbackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LBbackMouseClicked
          HomePanel.setVisible(true);
          LearningPanel.setVisible(false);
@@ -1581,7 +1525,6 @@ public class Home extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_AccountIDInputActionPerformed
 
-<<<<<<< HEAD
     private void EmailInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_EmailInputActionPerformed
@@ -1671,13 +1614,99 @@ public class Home extends javax.swing.JPanel {
         
     }//GEN-LAST:event_jPanel10MouseClicked
 
-=======
->>>>>>> f03478a (Initial commit for PrototypeTest)
+    private void quizPrevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizPrevBTNActionPerformed
+        // TODO add your handling code here:
+        saveAnswer();
+
+    // Check if we're not at the first question
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--; // Move to the previous question
+        loadQuestion(); // Load the previous question
+    } else {
+        JOptionPane.showMessageDialog(this, "You are on the first question.", "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+    }//GEN-LAST:event_quizPrevBTNActionPerformed
+
+    private void quizNextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizNextBTNActionPerformed
+        // TODO add your handling code here:
+        saveAnswer();
+
+   
+    if (currentQuestionIndex < currentQuestions.size() - 1) {
+        currentQuestionIndex++; // Move to the next question
+        loadQuestion(); // Load the next question
+    } else {
+        JOptionPane.showMessageDialog(this, "You are on the last question.", "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+    }//GEN-LAST:event_quizNextBTNActionPerformed
+
+    private void quizSubmitBTN1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizSubmitBTN1ActionPerformed
+        // TODO add your handling code here:
+     if (currentQuestions == null) {
+        JOptionPane.showMessageDialog(this, "Please start the quiz by selecting a topic and pressing Submit.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+        
+    }
+
+    saveAnswer(); // Save the current answer
+
+    if (currentQuestionIndex < currentQuestions.size() - 1) {
+        currentQuestionIndex++; // Move to the next question
+        loadQuestion(); // Load the next question
+    } else {
+        // End of the quiz
+        quizResult.calculateScore(userAnswers, currentQuestions); // Calculate the score
+        String summary = quizResult.getSummary(); // Get the summary
+        JOptionPane.showMessageDialog(this, summary, "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
+
+        // Disable navigation and answer buttons after completion
+        aBTN.setEnabled(false);
+        bBTN.setEnabled(false);
+        cBTN.setEnabled(false);
+        dBTN.setEnabled(false);
+        quizNextBTN.setEnabled(false);
+        quizPrevBTN.setEnabled(false);
+        quizSubmitBTN1.setEnabled(false);
+
+        // Optionally, show the results on the GUI
+        quizTA1.setText(summary);
+    }
+    }//GEN-LAST:event_quizSubmitBTN1ActionPerformed
+
+    private void submitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitTopicBTNActionPerformed
+       // Initialize userAnswers if not already done
+    if (userAnswers == null) {
+        userAnswers = new HashMap<>();
+    }
+
+    // Get selected topic
+    String selectedTopic = (String) topicCB.getSelectedItem();
+
+    // Fetch questions for the selected topic
+    currentQuestions = Question.getQuestionsByTopic(selectedTopic);
+
+    // Ensure the list is not null or empty
+    if (currentQuestions == null || currentQuestions.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Reset index and clear previous answers
+    currentQuestionIndex = 0;
+    System.out.println("userAnswers initialized: " + (userAnswers != null));
+    userAnswers.clear(); // Safe because it's initialized above
+
+    // Load the first question
+    loadQuestion();
+
+    // Enable the quiz controls
+    enableQuizControls();
+    }//GEN-LAST:event_submitTopicBTNActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AccountIDInput;
     private javax.swing.JTextField AccountNameInput;
-<<<<<<< HEAD
     private javax.swing.JPanel AdminPanel;
     private javax.swing.JPanel AdminQuizPanel;
     private javax.swing.JPanel AnswerPanel;
@@ -1726,24 +1755,10 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-=======
-    private javax.swing.JLabel BACKtoStart;
-    private javax.swing.JPanel CreateAccPanel;
-    private javax.swing.JButton CreateAccount;
-    private javax.swing.JPanel HomePanel;
-    private javax.swing.JLabel LBback;
-    private javax.swing.JPanel LearningPanel;
-    private javax.swing.JButton StartButton;
-    private javax.swing.JPanel StartPanel;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-<<<<<<< HEAD
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -1770,18 +1785,11 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
-=======
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-<<<<<<< HEAD
     private javax.swing.JLabel jLabel8;
-=======
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -1792,7 +1800,6 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
-<<<<<<< HEAD
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     public javax.swing.JPanel jPanel2;
@@ -1811,14 +1818,10 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-=======
-    private javax.swing.JPanel jPanel2;
->>>>>>> f03478a (Initial commit for PrototypeTest)
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-<<<<<<< HEAD
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
@@ -1838,15 +1841,10 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JButton quizNextBTN;
     private javax.swing.JButton quizPrevBTN;
     private javax.swing.JButton quizSubmitBTN1;
-    private javax.swing.JTextArea quizTA;
+    private javax.swing.JTextArea quizTA1;
     private javax.swing.JButton submitTopicBTN;
     private javax.swing.JPanel timerPanel;
     private javax.swing.JPanel topBar;
     private javax.swing.JComboBox<String> topicCB;
-=======
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
->>>>>>> f03478a (Initial commit for PrototypeTest)
     // End of variables declaration//GEN-END:variables
 }
