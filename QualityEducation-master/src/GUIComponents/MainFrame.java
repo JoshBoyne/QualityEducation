@@ -3,19 +3,11 @@ package GUIComponents;
 import Main.Styles;
 import javax.swing.*;
 import java.awt.*;
-
 import prototypetest.MainGUI;
 
 public class MainFrame extends JPanel {
     public MainGUI restOfApp;
     public MainFrame(MainGUI home) {
-
-import prototypetest.Home;
-
-public class MainFrame extends JPanel {
-    public Home restOfApp;
-    public MainFrame(Home home) {
-
         this.restOfApp = home;
         this.setSize(new Dimension(920, 550));
         this.setMaximumSize(new Dimension(920, 550));

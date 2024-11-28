@@ -4,19 +4,17 @@
  */
 package prototypetest;
 
-
 import java.awt.Desktop;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 
 /**
  *
  * @author jason
  */
 public class RManager {
-
+    
     
         // Method to attach click event to the label and open a link
     public void enableLinkLabel(JLabel linkLabel, String url) {
@@ -43,5 +41,4 @@ public class RManager {
     }
 
     
-
 }

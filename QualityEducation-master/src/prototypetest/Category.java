@@ -8,15 +8,6 @@ package prototypetest;
  *
  * @author jason
  */
-public class FeedbackForm {
+public class Category {
     
-
-
-
 }
-
-
-
-}
-}
-

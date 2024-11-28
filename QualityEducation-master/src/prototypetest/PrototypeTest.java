@@ -18,37 +18,19 @@ public class PrototypeTest {
     public static void main(String[] args) {
          java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-
               
                 JFrame frame = new JFrame("Home Panel");
 
             
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-   
+           
                 frame.add(new MainGUI());
-
-                frame.add(new Home());
-
 
                 // Set the frame to pref size
                 frame.pack();
 
                 
-
-                // Create a JFrame to hold the JPanel
-                JFrame frame = new JFrame("Home Panel");
-
-                // Set the default close operation
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-                // Add the Home JPanel to the frame
-                frame.add(new Home());
-
-                // Set the frame size to match the JPanel's preferred size
-                frame.pack();
-
-                // Make the frame visible
                 frame.setVisible(true);
             }
         });

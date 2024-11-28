@@ -1,0 +1,25 @@
+
+/build/
+/dist/
+*.class
+*.jar
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/nbactions.xml
+/nb-configuration.xml
+
+
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore other IDE files
+*.iml
+.idea/
+build/built-jar.properties
