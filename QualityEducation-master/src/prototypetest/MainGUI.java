@@ -164,7 +164,7 @@ private void handlePreviousButton() {
 private void handleSubmitAnswers() {
     quizSubmitBTN1.addActionListener(e -> {
         saveAnswer();  // Save the current answer
-        JOptionPane.showMessageDialog(this, "Answers Submitted: " + userAnswers);  // Show submitted answers
+       
     });
 }
 

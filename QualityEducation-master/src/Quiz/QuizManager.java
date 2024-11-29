@@ -10,105 +10,85 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  *
  * @author Josh
  */
-//For Admin Page
+
 public class QuizManager {
 
-    private List<Question> questions; // List to store questions
+    private List<Question> questions; // List to hold questions
+    private Map<Integer, String> userAnswers; // Map to store user answers
 
-    // Constructor to initialize the questions list
     public QuizManager() {
-        this.questions = new ArrayList<>();
+        questions = new ArrayList<>();
+        userAnswers = new HashMap<>();
     }
 
-    // Method to load questions from a file
+    // Load questions from a file
     public void loadQuestionsFromFile(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Parse and add questions to the list
                 String[] parts = line.split(",");
-                if (parts.length == 6) { // Ensure valid data
+                if (parts.length == 6) {
                     String text = parts[0];
                     String optionA = parts[1];
                     String optionB = parts[2];
                     String optionC = parts[3];
                     String optionD = parts[4];
-                    String answer = parts[5];
-                    Question question = new Question(text, optionA, optionB, optionC, optionD, answer);
-                    questions.add(question); // Add to the list
+                    String correctAnswer = parts[5];
+                    questions.add(new Question(text, optionA, optionB, optionC, optionD, correctAnswer));
                 }
+            }
+            System.out.println("Questions loaded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error loading questions: " + e.getMessage());
+        }
+    }
+
+    // Save questions and user answers to a file
+    public void saveToFile(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("Questions and User Answers:\n");
+            for (int i = 0; i < questions.size(); i++) {
+                Question question = questions.get(i);
+                writer.write("Question " + (i + 1) + ": " + question.getText() + "\n");
+                writer.write("Options: A) " + question.getOptionA() + " B) " + question.getOptionB() +
+                        " C) " + question.getOptionC() + " D) " + question.getOptionD() + "\n");
+                String userAnswer = userAnswers.get(i) != null ? userAnswers.get(i) : "No Answer";
+                writer.write("User Answer: " + userAnswer + "\n");
+                writer.write("Correct Answer: " + question.getCorrectAnswer() + "\n\n");
+            }
+            System.out.println("Data saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error saving data: " + e.getMessage());
+        }
+    }
+
+    // Read and display the file content
+    public void readFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            System.out.println("File Content:");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
     }
 
-    // Method to save questions to a file
-public void saveQuestionsToFile(String filePath) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-        for (Question question : questions) {
-            writer.write(question.getText() + "," +
-                    question.getOptionA() + "," +
-                    question.getOptionB() + "," +
-                    question.getOptionC() + "," +
-                    question.getOptionD() + "," +
-                    question.getCorrectAnswer());
-            writer.newLine();
-        }
-        System.out.println("Questions saved successfully to " + filePath);
-    } catch (IOException e) {
-        System.err.println("Error writing file: " + e.getMessage());
+    // Add user answer for a question
+    public void addUserAnswer(int questionIndex, String answer) {
+        userAnswers.put(questionIndex, answer);
     }
-}
 
-public void verifyFile(String filePath) {
-    File file = new File(filePath);
-    if (file.exists()) {
-        System.out.println("File exists: " + filePath);
-    } else {
-        try {
-            if (file.createNewFile()) {
-                System.out.println("File created successfully: " + filePath);
-            }
-        } catch (IOException e) {
-            System.err.println("Error creating file: " + e.getMessage());
-        }
-    }
-}
-
-public void readFile(String filePath) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        System.out.println("Reading file contents:");
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-    } catch (IOException e) {
-        System.err.println("Error reading file: " + e.getMessage());
-    }
-}
-
-    // Getter for the questions list
+    // Get questions (for display or modification)
     public List<Question> getQuestions() {
         return questions;
-    }
-
-    // Method to add a question (for admin)
-    public void addQuestion(Question question) {
-        questions.add(question);
-    }
-
-    // Method to delete a question by index (for admin)
-    public void deleteQuestion(int index) {
-        if (index >= 0 && index < questions.size()) {
-            questions.remove(index);
-        } else {
-            System.err.println("Invalid question index.");
-        }
     }
 }
