@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import Quiz.Question;
 /**
  *
  * @author jason
@@ -34,6 +35,17 @@ public class MainApp {
                 frame.setVisible(true);
                 
                 try {
+                    // Save questions to the new QuizData package
+                    List<String> topics = List.of("Maths", "Geography", "Space", "Science");
+                    for (String topic : topics) {
+                        List<Question> questions = Question.getQuestionsByTopic(topic);
+                        Question.saveQuestionsToFile(topic, questions);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                try {
                     Account test = new Account("a", "b");
                 } catch (IOException ex) {
                     Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -41,4 +53,5 @@ public class MainApp {
             }
         });
     }
-}
+    
+   }

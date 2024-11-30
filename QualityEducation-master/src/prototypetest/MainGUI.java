@@ -1074,7 +1074,7 @@ private void initializeButtonActions() {
         });
         QuizPanel1.add(quizNextBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 370, 90, 30));
 
-        topicCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Topic 1", "Topic 2", "Topic 3", "Topic 4", " " }));
+        topicCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Maths", "Geography", "Space", "Science" }));
         topicCB.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         QuizPanel1.add(topicCB, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 280, 190, 30));
 

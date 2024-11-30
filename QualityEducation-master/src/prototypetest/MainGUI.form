@@ -1672,12 +1672,11 @@
             <Component class="javax.swing.JComboBox" name="topicCB">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="Topic 1"/>
-                    <StringItem index="1" value="Topic 2"/>
-                    <StringItem index="2" value="Topic 3"/>
-                    <StringItem index="3" value="Topic 4"/>
-                    <StringItem index="4" value=" "/>
+                  <StringArray count="4">
+                    <StringItem index="0" value="Maths"/>
+                    <StringItem index="1" value="Geography"/>
+                    <StringItem index="2" value="Space"/>
+                    <StringItem index="3" value="Science"/>
                   </StringArray>
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">

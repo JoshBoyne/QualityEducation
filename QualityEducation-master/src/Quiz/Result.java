@@ -10,6 +10,7 @@ package Quiz;
  */
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,32 +60,60 @@ public class Result {
     }
     
     
-    public void saveResultsToFile(String filePath, Map<String, Integer> results) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-        for (Map.Entry<String, Integer> entry : results.entrySet()) {
-            writer.write(entry.getKey() + ":" + entry.getValue());
-            writer.newLine();
-        }
-    } catch (IOException e) {
-        System.err.println("Error writing results: " + e.getMessage());
-    }
-}
-    
-    public Map<String, Integer> loadResultsFromFile(String filePath) {
-    Map<String, Integer> results = new HashMap<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(":");
-            if (parts.length == 2) {
-                String user = parts[0];
-                int score = Integer.parseInt(parts[1]);
-                results.put(user, score);
+     // Save results to a file in the QuizData package
+    public void saveResultsToFile(String userName, Map<Integer, String> userAnswers, List<Question> questions) {
+        try {
+            // Create the QuizData directory if it doesn't exist
+            String dir = System.getProperty("user.dir");
+            String dirPath = dir + File.separator + "src" + File.separator + "QuizData";
+            File dataDir = new File(dirPath);
+
+            if (!dataDir.exists()) {
+                if (dataDir.mkdirs()) {
+                    System.out.println("QuizData directory created at: " + dataDir.getAbsolutePath());
+                } else {
+                    System.err.println("Failed to create QuizData directory.");
+                    return;
+                }
+            } else {
+                System.out.println("QuizData directory already exists: " + dataDir.getAbsolutePath());
             }
+
+            // Create a results file for the user
+            File resultsFile = new File(dataDir, userName + "_results.txt");
+            if (!resultsFile.exists() && resultsFile.createNewFile()) {
+                System.out.println("Results file created: " + resultsFile.getAbsolutePath());
+            }
+
+            // Write results to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile))) {
+                writer.write("Quiz Results for " + userName + ":\n");
+                writer.write("=============================\n");
+
+                for (int i = 0; i < questions.size(); i++) {
+                    Question question = questions.get(i);
+                    String userAnswer = userAnswers.getOrDefault(i, "No Answer");
+                    writer.write("Q" + (i + 1) + ": " + question.getText() + "\n");
+                    writer.write("Your Answer: " + userAnswer + "\n");
+                    writer.write("Correct Answer: " + question.getCorrectAnswer() + "\n");
+                    writer.write("-----------------------------\n");
+                }
+
+                writer.write("Final Score: " + score + "/" + totalQuestions + "\n");
+                writer.write(getSummary());
+                writer.newLine();
+                System.out.println("Results saved successfully to: " + resultsFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving results: " + e.getMessage());
         }
-    } catch (IOException | NumberFormatException e) {
-        System.err.println("Error reading results: " + e.getMessage());
     }
-    return results;
-}
+
+
+    
+    
+    //implement read/write for results
+    //connect results with user
+    //print question and result with users
+    
 }
