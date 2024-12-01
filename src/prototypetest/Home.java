@@ -4,6 +4,14 @@
  */
 package prototypetest;
 
+import Main.Account;
+import Main.IOHandler;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author jason, Josh, Owen
@@ -14,10 +22,11 @@ public class Home extends javax.swing.JPanel {
          
    }
 
-    
+    public Account user;
     public Home() {
         initComponents();
-        
+       
+       
         RManager rManager = new RManager(); //instance of RManager
          rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
          
@@ -1363,8 +1372,19 @@ public class Home extends javax.swing.JPanel {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here://Main button after creating account
+        String input = AccountNameInput.getText();
+       try {
+          user = IOHandler.loadState(input);
+          user.login();
+          user.updateUI(this);
+       } catch (IOException ex) {
+           Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (ClassNotFoundException ex) {
+           Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+       }
         CreateAccPanel.setVisible(false);
         HomePanel.setVisible(true);
+        System.out.println(user.getName());
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void EmailfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailfieldActionPerformed
@@ -1579,7 +1599,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
-    private GUIComponents.MainFrame mainFrame1;
+    public GUIComponents.MainFrame mainFrame1;
     private javax.swing.ButtonGroup quizBG;
     private javax.swing.JButton quizNextBTN;
     private javax.swing.JButton quizPrevBTN;

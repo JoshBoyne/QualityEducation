@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 
 public class QotdPanel extends JPanel {
     Dimension dimensions = new Dimension(400, 220);
+    private JPanel buttonsPlaceholder;
+    private  JLabel question;
     public QotdPanel() {
      // this.setBackground(Color.red);
         this.setPreferredSize(dimensions);
@@ -25,7 +27,7 @@ public class QotdPanel extends JPanel {
         qotd.setFont(new Font("Arial", Font.BOLD, 28));
         this.add(qotd, BorderLayout.NORTH);
         //
-        JLabel question = new JLabel("<html><b>Which of the following correctly describes the differences<br> between full, incremental, and differential backups?" +
+        question = new JLabel("<html><b>Which of the following correctly describes the differences<br> between full, incremental, and differential backups?" +
                 "<br>A: Lorem Ipsum.    |    B: lorem Ipsum.<br>C: Lorem Ipsum.    |    D: Lorem Ipsum.</b></html>");
         question.setPreferredSize(new Dimension(300, 100));
         question.setHorizontalAlignment(SwingConstants.CENTER);
@@ -37,7 +39,7 @@ public class QotdPanel extends JPanel {
 
         //
         //BUttons for Awnsers
-        JPanel buttonsPlaceholder = new JPanel();
+        buttonsPlaceholder = new JPanel();
         buttonsPlaceholder.setBackground(Styles.secondarySalmon);
         buttonsPlaceholder.setPreferredSize(new Dimension(600, 50));
         buttonsPlaceholder.setLayout(new GridBagLayout());
@@ -76,18 +78,9 @@ public class QotdPanel extends JPanel {
 
         }
             buttonConst.gridx = 3;
-            JButton tempBack = new JButton("BACK");
-            tempBack.setPreferredSize(new Dimension(100, 100));
-            tempBack.setBackground(Color.red);
-            tempBack.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                MainFrame home = (MainFrame) SwingUtilities.getAncestorOfClass(MainFrame.class, buttonsPlaceholder);
-                System.out.println(home.getClass().getName());
-                home.restOfApp.HomePanel.setVisible(true);
-                home.setVisible(false);
-            }
-        });
+            JButton tempBack = new CustomButton("BACK, buttonConst");
+            
+ 
             buttonsPlaceholder.add(tempBack, buttonConst);
 
 
@@ -109,6 +102,14 @@ public class QotdPanel extends JPanel {
         graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint background
         graphics.setColor(getForeground());
         graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint border
+    }
+    
+    public JLabel getQuestion() {
+        return this.question;
+    }
+    
+    public JPanel getButtons() {
+        return this.buttonsPlaceholder;
     }
 }
 

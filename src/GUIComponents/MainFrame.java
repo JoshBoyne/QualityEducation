@@ -5,8 +5,12 @@ import javax.swing.*;
 import java.awt.*;
 import prototypetest.Home;
 
+//what im doing - figuring out how to access teh daily quests panel from an instance of this
+
 public class MainFrame extends JPanel {
     public Home restOfApp;
+    private CenterPanel centerPanel;
+    private DailyQuestsContainer dailyQuestsContainer;
     public MainFrame(Home home) {
         this.restOfApp = home;
         this.setSize(new Dimension(920, 550));
@@ -15,10 +19,12 @@ public class MainFrame extends JPanel {
         this.setBackground(Styles.greyBackground);
         this.add(new GUIHeader(), BorderLayout.NORTH);
 
-        this.add(new DailyQuestsContainer(), BorderLayout.EAST);
+        dailyQuestsContainer = new DailyQuestsContainer();
+        this.add(dailyQuestsContainer, BorderLayout.EAST);
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
-        panel.add(new CenterPanel());
+        centerPanel = new CenterPanel(this);
+        panel.add(centerPanel);
         panel.setMaximumSize(new Dimension(595, 490));
         this.add(panel, BorderLayout.CENTER);
 
@@ -44,7 +50,7 @@ public class MainFrame extends JPanel {
         this.add(new GUIHeader(), BorderLayout.NORTH);
 
         this.add(new DailyQuestsContainer(), BorderLayout.EAST);
-        this.add(new CenterPanel(), BorderLayout.CENTER);
+        this.add(new CenterPanel(this), BorderLayout.CENTER);
 
         // Make the frame visible
         this.setVisible(true);
@@ -60,8 +66,12 @@ public class MainFrame extends JPanel {
         this.add(south, BorderLayout.SOUTH);
     }
     
-    public void test() {
-        
+    public CenterPanel getCenterPanel() {
+        return this.centerPanel;
+    }
+    
+    public DailyQuestsContainer getDailyQuestsContainer() {
+        return this.dailyQuestsContainer;
     }
 
 }

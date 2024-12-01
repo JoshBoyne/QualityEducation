@@ -3,9 +3,11 @@ package GUIComponents;
 import Main.Styles;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class StreakContainer extends JPanel {
-
+    private ArrayList<BarClass> streakBars = new ArrayList<>();
+    
     public StreakContainer() {
         this.setBackground(Styles.greyBackground);
         this.setLayout(new GridBagLayout());
@@ -23,8 +25,20 @@ public class StreakContainer extends JPanel {
             int y = 0;
             constraints.gridx = x;
             constraints.gridy = y;
-            this.add(new BarClass(), constraints);
+            BarClass bar = new BarClass();
+            this.add(bar, constraints);
+            streakBars.add(bar);
             x++;
         }
+    }
+    
+    public void setColors(int[] logins) {
+        
+        for(int i = 0; i<7; i++) {
+            if(logins[i] == 1) {
+                streakBars.get(i).setBackground(Color.green);
+            }
+        }
+       
     }
 }

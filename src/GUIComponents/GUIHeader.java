@@ -82,7 +82,9 @@ public class GUIHeader extends JPanel {
         this.add(dailyQuestHead);
     }
     
-    private void BACKtoStartMouseClicked(java.awt.event.MouseEvent evt) {                                         
-       //StartPanel.setVisible(true);
+    private void BACKtoStartMouseClicked(java.awt.event.MouseEvent evt) { 
+        MainFrame home = (MainFrame) SwingUtilities.getAncestorOfClass(MainFrame.class, this);
+        home.restOfApp.HomePanel.setVisible(true);
+        home.setVisible(false);
     }    
 }
