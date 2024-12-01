@@ -59,8 +59,33 @@ public class Question {
     public String getCorrectAnswer() {
         return correctAnswer;
     }
+    
+    // Setters
+    public void setText(String text) {
+        this.text = text;
+    }
 
-    // Static method to return questions by topic
+    public void setOptionA(String optionA) {
+        this.optionA = optionA;
+    }
+
+    public void setOptionB(String optionB) {
+        this.optionB = optionB;
+    }
+
+    public void setOptionC(String optionC) {
+        this.optionC = optionC;
+    }
+
+    public void setOptionD(String optionD) {
+        this.optionD = optionD;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+    
+
     public static List<Question> getQuestionsByTopic(String topic) {
         List<Question> questions = new ArrayList<>();
 
@@ -98,7 +123,7 @@ public class Question {
         return questions;
     }
     
-    //do read and write for questions
+    //read and write for questions
     public static void saveQuestionsToFile(String topic, List<Question> questions) throws IOException {
         // Create the QuizData directory if it doesn't exist
         String projectDir = System.getProperty("user.dir");
@@ -114,7 +139,6 @@ public class Question {
             }
         }
 
-        // Create the topic-specific file
         String filePath = packagePath + File.separator + "questions_" + topic + ".txt";
         File file = new File(filePath);
         if (!file.exists()) {
@@ -136,4 +160,6 @@ public class Question {
 
         System.out.println("Questions for " + topic + " saved to: " + filePath);
     }
+    
+    
 }

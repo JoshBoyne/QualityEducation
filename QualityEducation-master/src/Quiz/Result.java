@@ -28,7 +28,7 @@ public class Result {
         this.totalQuestions = 0;
     }
 
-    // Calculate the score based on user's answers
+    // Calculate the score based on user answers
     public void calculateScore(Map<Integer, String> userAnswers, List<Question> questions) {
         score = 0;
         totalQuestions = questions.size();

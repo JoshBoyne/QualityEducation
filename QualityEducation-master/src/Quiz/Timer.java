@@ -9,9 +9,8 @@ package Quiz;
  * @author Josh
  */
 public class Timer {
-    
     private int timeLeft;
-    
+
     public Timer(int timeLeft) {
         this.timeLeft = timeLeft;
     }
@@ -26,8 +25,11 @@ public class Timer {
         }
     }
 
+    public void incrementTime() {
+        timeLeft++;
+    }
+
     public void resetTime(int time) {
         this.timeLeft = time;
     }
-    
 }

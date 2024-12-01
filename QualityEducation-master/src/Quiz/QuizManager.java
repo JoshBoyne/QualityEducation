@@ -22,7 +22,8 @@ public class QuizManager {
 
     private List<Question> questions; // List to hold questions
     private Map<Integer, String> userAnswers; // Map to store user answers
-
+    private int currentQuestionIndex = 0; // Track the current question for admin navigation
+     
     public QuizManager() {
         questions = new ArrayList<>();
         userAnswers = new HashMap<>();
@@ -90,5 +91,60 @@ public class QuizManager {
     // Get questions (for display or modification)
     public List<Question> getQuestions() {
         return questions;
+    }
+     
+
+    // Get the current question
+    public Question getCurrentQuestion() {
+        if (questions.isEmpty()) {
+            return null; // No questions available
+        }
+        return questions.get(currentQuestionIndex);
+    }
+
+    // Navigate to the next question
+    public Question nextQuestion() {
+        if (currentQuestionIndex < questions.size() - 1) {
+            currentQuestionIndex++;
+        }
+        return getCurrentQuestion();
+    }
+
+    // Navigate to the previous question
+    public Question previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+        }
+        return getCurrentQuestion();
+    }
+
+    // Add a new question
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    // Update the current question
+    public void updateCurrentQuestion(String text, String optionA, String optionB, String optionC, String optionD, String correctAnswer) {
+        if (!questions.isEmpty()) {
+            Question currentQuestion = getCurrentQuestion();
+            if (currentQuestion != null) {
+                currentQuestion.setText(text);
+                currentQuestion.setOptionA(optionA);
+                currentQuestion.setOptionB(optionB);
+                currentQuestion.setOptionC(optionC);
+                currentQuestion.setOptionD(optionD);
+                currentQuestion.setCorrectAnswer(correctAnswer);
+            }
+        }
+    }
+
+    // Delete the current question
+    public void deleteCurrentQuestion() {
+        if (!questions.isEmpty() && currentQuestionIndex >= 0 && currentQuestionIndex < questions.size()) {
+            questions.remove(currentQuestionIndex);
+            if (currentQuestionIndex >= questions.size()) {
+                currentQuestionIndex = questions.size() - 1;
+            }
+        }
     }
 }
