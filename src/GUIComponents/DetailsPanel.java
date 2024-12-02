@@ -81,7 +81,7 @@ private JLabel yourNameLabel;
 
         // Bottom Panel (centerS)
         JPanel centerS = new JPanel();
-        centerS.setBackground(Color.green);
+        //centerS.setBackground(Color.green);
         centerS.setPreferredSize(new Dimension(595, 30));
         centerS.setLayout(new GridBagLayout());
 
@@ -167,21 +167,19 @@ btn3.addActionListener((ActionEvent e) -> {
 }
 
 private void addSectionToFrame(JFrame frame, String topic, Color bgColor) {
-    // Main panel for the topic
     JPanel section = new JPanel();
     section.setBackground(bgColor);
     section.setLayout(new BoxLayout(section, BoxLayout.Y_AXIS)); // Vertical layout
 
-    // Add the subject name as a heading
+ 
     JLabel headingLabel = new JLabel(topic, SwingConstants.CENTER);
     headingLabel.setFont(new Font("Arial", Font.BOLD, 18));
     headingLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT); // Center the label horizontally
     section.add(headingLabel);
 
-    // Add a small vertical gap
     section.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Create a sub-panel for the "Current Streak Goal" section
+    
     JPanel streakPanel = new JPanel();
     streakPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5)); // Minimal padding
     streakPanel.setBackground(bgColor);
@@ -189,59 +187,57 @@ private void addSectionToFrame(JFrame frame, String topic, Color bgColor) {
     JLabel streakLabel = new JLabel("Current Streak Goal:");
     JTextField streakTextField = new JTextField(10);
 
-    // "Set" button
+    //Set button for goal
     JButton setButton = new JButton("Set");
     setButton.setBackground(Color.BLUE);
     setButton.setForeground(Color.WHITE);
     setButton.setFocusPainted(false);
     setButton.setFont(new Font("Arial", Font.PLAIN, 12)); // Smaller font for the button
 
-    // Add an action listener for the button
+    
     setButton.addActionListener(e -> {
         String streakGoal = streakTextField.getText();
-        System.out.println("Streak Goal Set: " + streakGoal); // Replace with your logic
+       
     });
 
-    // Add components to the streak panel
+    //Adding compontents
     streakPanel.add(streakLabel);
     streakPanel.add(streakTextField);
     streakPanel.add(setButton);
-
     section.add(streakPanel);
 
-    // Add a small vertical gap
+
     section.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Create a sub-panel for the custom goals section
+    //Custom goals
     JPanel customGoalsPanel = new JPanel();
     customGoalsPanel.setLayout(new BoxLayout(customGoalsPanel, BoxLayout.Y_AXIS));
     customGoalsPanel.setBackground(bgColor);
 
-    // Subheading for custom goals
+    
     JLabel customGoalsHeading = new JLabel("Custom Goals", SwingConstants.LEFT);
     customGoalsHeading.setFont(new Font("Arial", Font.BOLD, 14));
     customGoalsHeading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
     customGoalsPanel.add(customGoalsHeading);
 
-    // Area for displaying custom goals (scrollable)
+    //Scrollable textArea for goals
     JTextArea goalsArea = new JTextArea(5, 20);
     goalsArea.setEditable(false);
     goalsArea.setLineWrap(true);
     goalsArea.setWrapStyleWord(true);
-    JScrollPane goalsScrollPane = new JScrollPane(goalsArea, 
-        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Vertical scrollbar only
+    JScrollPane goalsScrollPane = new JScrollPane(goalsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Vertical scrollbar only
     customGoalsPanel.add(goalsScrollPane);
 
-    // Sub-panel for "Record New Goal" label and Save button
+    
     JPanel recordGoalHeaderPanel = new JPanel();
     recordGoalHeaderPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5)); // Align left with small padding
     recordGoalHeaderPanel.setBackground(bgColor);
 
+    //Save button
     JLabel recordNewGoalHeading = new JLabel("Record New Goal");
     recordNewGoalHeading.setFont(new Font("Arial", Font.BOLD, 14));
     JButton saveButton = new JButton("Save");
-    saveButton.setBackground(Color.GREEN);
+    //saveButton.setBackground(Color.GREEN);
     saveButton.setForeground(Color.WHITE);
     saveButton.setFocusPainted(false);
 
@@ -251,20 +247,19 @@ private void addSectionToFrame(JFrame frame, String topic, Color bgColor) {
 
     customGoalsPanel.add(recordGoalHeaderPanel);
 
-    // Text area for adding a new custom goal
+   //Text area for adding new goals
     JTextArea newGoalArea = new JTextArea(3, 20);
     newGoalArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     customGoalsPanel.add(newGoalArea);
 
-    // Add action listener to the save button
+    
     saveButton.addActionListener(e -> {
         String newGoal = newGoalArea.getText();
-        System.out.println("New Goal: " + newGoal); // Replace with actual save logic
+     
     });
 
     section.add(customGoalsPanel);
 
-    // Add the section to the frame
     frame.add(section);
 }
 
@@ -272,20 +267,20 @@ private JPanel createScrollableDateGrid(LocalDate startDate, LocalDate today) {
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
 
-    // Date grid panel
+    //Grid panel for calander
     JPanel gridPanel = new JPanel();
     gridPanel.setLayout(new GridLayout(0, 7, 5, 5)); // 7 columns, dynamic rows
     gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding around the grid
 
-    // Populate the grid with the start month dates
+    //Calling populate data helper function to populate the grid array. 
     populateDateGrid(gridPanel, startDate, today);
 
-    // Make the grid scrollable
+    //Making the panel scrollable
     JScrollPane scrollPane = new JScrollPane(gridPanel, 
             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-    // Navigation panel for month switching
+    //The main panel for the moth being viewed
     JPanel navigationPanel = createNavigationPanel(startDate, gridPanel, today);
 
     // Add components to the main panel
@@ -298,13 +293,14 @@ private JPanel createScrollableDateGrid(LocalDate startDate, LocalDate today) {
 
 
 private void populateDateGrid(JPanel gridPanel, LocalDate monthStart, LocalDate today) {
-    gridPanel.removeAll(); // Clear previous grid content
+    gridPanel.removeAll(); //Getting rid of what is currently in the grid. 
 
+    //Calculating the dates needed for the motnth
     YearMonth yearMonth = YearMonth.from(monthStart);
     LocalDate currentDate = yearMonth.atDay(1);
-    int daysInMonth = yearMonth.lengthOfMonth();
+    int daysInMonth = yearMonth.lengthOfMonth();//Total number of panels needed for the grid
 
-    // Add panels for each day in the month
+    //Adding the panels
     for (int day = 1; day <= daysInMonth; day++) {
         LocalDate date = currentDate.plusDays(day - 1);
         if (!date.isAfter(today)) { // Only add dates up to today
@@ -317,7 +313,7 @@ private void populateDateGrid(JPanel gridPanel, LocalDate monthStart, LocalDate 
 }
 
 
-
+//To do: Add this to its own class, with other functions for these frames.
 private JPanel createDatePanel(LocalDate date) {
     JPanel datePanel = new JPanel();
     datePanel.setPreferredSize(new Dimension(60, 60)); // Square panels
@@ -331,7 +327,8 @@ private JPanel createDatePanel(LocalDate date) {
 
     return datePanel;
 }
-  LocalDate activeMonth;
+
+LocalDate activeMonth;
 private JPanel createNavigationPanel(LocalDate currentMonth, JPanel gridPanel, LocalDate today) {
     JPanel navigationPanel = new JPanel();
     navigationPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -339,32 +336,30 @@ private JPanel createNavigationPanel(LocalDate currentMonth, JPanel gridPanel, L
     JButton prevButton = new JButton("Previous");
     JButton nextButton = new JButton("Next");
 
-    // Update the navigation panel's buttons to handle valid months
-    //nextButton.setEnabled(currentMonth.getMonth() != today.getMonth() || currentMonth.getYear() != today.getYear());
 
-    activeMonth = currentMonth.minusMonths(0);
+    activeMonth = currentMonth.minusMonths(0);//Easiest way I found of handling this localDate object
     
-    // Previous button action: Move one month back
+    //Previous month button
     prevButton.addActionListener(e -> {
         activeMonth = activeMonth.minusMonths(1);
-        populateDateGrid(gridPanel, activeMonth, today);
-        updateMonthLabel(navigationPanel, activeMonth);
-       // nextButton.setEnabled(activeMonth.getMonth() != today.getMonth() || currentMonth.getYear() != today.getYear());
+        populateDateGrid(gridPanel, activeMonth, today);//Repopulating grid
+        updateMonthLabel(navigationPanel, activeMonth);//Reassigning label
+   
     });
 
-    // Next button action: Move one month forward
+    //Next month button
     nextButton.addActionListener(e -> {
         if(!activeMonth.plusMonths(1).isAfter(today))
             activeMonth = activeMonth.plusMonths(1);
-        
+        //
         if (!activeMonth.isAfter(today)) {
             populateDateGrid(gridPanel, activeMonth, today);
             updateMonthLabel(navigationPanel, activeMonth);
-            System.out.println("next firing");
+           
         }
     });
 
-    // Add the buttons to the navigation panel
+    //Btns
     navigationPanel.add(prevButton);
     navigationPanel.add(new JLabel(currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy")))); // Month-Year label
     navigationPanel.add(nextButton);
@@ -375,19 +370,11 @@ private JPanel createNavigationPanel(LocalDate currentMonth, JPanel gridPanel, L
 
 
 private void updateMonthLabel(JPanel navigationPanel, LocalDate month) {
-    // Find the label in the navigation panel and update it
+    //Todo: take this out of its own function. Logic doesnt require it. 
     JLabel monthLabel = (JLabel) navigationPanel.getComponent(1);
     monthLabel.setText(month.format(DateTimeFormatter.ofPattern("MMMM yyyy")));
 }
 
-
-
-
-
-
-
-    
-    
     public JLabel getYourNameLabel() {
         return this.yourNameLabel;
     }
