@@ -52,7 +52,7 @@ public static Questions q = new Questions();
             writer.close();
             return dir1;
         } 
-        System.out.println("Directory already exists");
+        //System.out.println("Directory already exists");
         return null;
     }
     
@@ -118,16 +118,16 @@ public static Questions q = new Questions();
         
         dateLoop:
         for(int i = 0; i<7; i++) {//Iterate through the last 7 days
-            System.out.println("The outer date being checked: "+startOfStreakS);
+            //System.out.println("The outer date being checked: "+startOfStreakS);
             for(String login : loginDates) {//Iterate through all logins in the loginDates array 
-                System.out.println("date being checked: "+login);
+               // System.out.println("date being checked: "+login);
                 
                 if(login.equals(startOfStreakS)) {
                     //Logged in on this date
                     startOfStreak = startOfStreak.plusDays(1);
                     startOfStreakS = startOfStreak.toString();
                     loginBools[i] = 1;
-                    System.out.println("logged In This Day");
+                  //  System.out.println("logged In This Day");
                     continue dateLoop; //Proceed to next date 
                 }
             }
