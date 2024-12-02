@@ -103,7 +103,7 @@ public class Account implements Serializable {
               button.addActionListener(new ActionListener() {
                   @Override
                   public void actionPerformed(ActionEvent e) {
-                      System.out.println("Button clicked: " + button.getText());
+                    //  System.out.println("Button clicked: " + button.getText());
                       checkAns(button.getText(), home);
                   }
               });
@@ -155,8 +155,8 @@ public class Account implements Serializable {
                 }
             }
         }
-        System.out.println("ans: "+ansr);
-        System.out.println("ans 2: "+ans[1]);
+       // System.out.println("ans: "+ansr);
+       // System.out.println("ans 2: "+ans[1]);
         //If correct
         if(ansr.equals(this.qotd[1])) {
             
@@ -172,7 +172,7 @@ public class Account implements Serializable {
              goalCount[subject] = goal;
          } 
          else {
-             System.out.println("wrong subject int passed");
+           //  System.out.println("wrong subject int passed");
          }
     }
 //Getters
