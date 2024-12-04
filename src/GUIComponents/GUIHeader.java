@@ -51,20 +51,10 @@ public class GUIHeader extends JPanel {
         welcomeMsgLbl.setVerticalAlignment(SwingConstants.CENTER);
         welcomeMsgLbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 0, 0));
         welcomeMsg.add(welcomeMsgLbl);
-        this.add(Box.createRigidArea(new Dimension(10, 0)));
+        this.add(Box.createRigidArea(new Dimension(40, 0)));
         this.add(welcomeMsg);
 
-        //Streak Symbol
-
-        this.add(Box.createRigidArea(new Dimension(30, 0)));
-        this.add(new StreakPanel());
-
-        //Streak Freezes
-
-        this.add(Box.createRigidArea(new Dimension(30, 0)));
-        this.add(new FreezePanel());
-        this.add(Box.createRigidArea(new Dimension(5, 0)));
-        this.add(new FreezePanel());
+       
 
         //Daily Quest Header
         JPanel dailyQuestHead = new JPanel();
@@ -78,7 +68,7 @@ public class GUIHeader extends JPanel {
         dailyQuestHeadLbl.setHorizontalAlignment(SwingConstants.CENTER);
         dailyQuestHeadLbl.setForeground(Color.white);
         dailyQuestHead.add(dailyQuestHeadLbl, BorderLayout.CENTER);
-        this.add(Box.createRigidArea(new Dimension(10, 0)));
+        this.add(Box.createRigidArea(new Dimension(110, 0)));
         this.add(dailyQuestHead);
     }
     

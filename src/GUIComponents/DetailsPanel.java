@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DetailsPanel extends JPanel {
 private JLabel yourNameLabel;
+JPanel centerC;
     public DetailsPanel(MainFrame home) {
         this.setBackground(Color.yellow);
         this.setPreferredSize(new Dimension(600, 130));
@@ -58,7 +59,7 @@ private JLabel yourNameLabel;
         centerPanel.setPreferredSize(new Dimension(100, 25));
 
         // Creating GridBagLayout container
-        JPanel centerC = new JPanel();
+        centerC = new JPanel();
         centerC.setLayout(new GridBagLayout());
         //centerC.setBackground(Color.orange);
         centerC.setPreferredSize(new Dimension(10, 25));
@@ -85,24 +86,10 @@ private JLabel yourNameLabel;
         centerS.setPreferredSize(new Dimension(595, 30));
         centerS.setLayout(new GridBagLayout());
 
+        //
         JButton btn1 = new JButton("Customize Goals");
         btn1.addActionListener((ActionEvent e) -> {
-            JFrame tempFrame = new JFrame("Topics");
-            tempFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only this frame
-            tempFrame.setSize(700, 700); // Set the size of the frame
-            tempFrame.setLocationRelativeTo(null); // Center the frame on the screen
-
-            // Set layout for the frame
-            tempFrame.setLayout(new GridLayout(2, 2, 10, 10)); // 2x2 grid with gaps between sections
-
-            // Create sections for each topic
-            addSectionToFrame(tempFrame, "Maths", Color.GREEN);
-            addSectionToFrame(tempFrame, "Science", Color.ORANGE);
-            addSectionToFrame(tempFrame, "Geography", Color.CYAN);
-            addSectionToFrame(tempFrame, "Planets", Color.MAGENTA);
-
-            // Make the frame visible
-            tempFrame.setVisible(true);
+            GoalsFrame goalFrame = new GoalsFrame(this);
         });
         JButton btn2 = new JButton("Account");
         btn2.addActionListener((ActionEvent e) -> {
@@ -145,6 +132,7 @@ btn3.addActionListener((ActionEvent e) -> {
     this.add(centerS, BorderLayout.SOUTH);
     }
     
+    //Move this to the Account class. It's being called before the user is logged in when it's here. 04.12.24
     private void addPanelWithText(JPanel container, GridBagConstraints gbc, int gridX, String subject, String quizGoal, String quizCount, Color bgColor) {
     JPanel panel = new JPanel();
     panel.setLayout(new GridLayout(3, 1)); // 3 rows for each text line
@@ -154,7 +142,28 @@ btn3.addActionListener((ActionEvent e) -> {
 
     // Add labels to the panel
     JLabel label1 = new JLabel(subject, SwingConstants.CENTER);
-    JLabel label2 = new JLabel(quizGoal, SwingConstants.CENTER);
+    JLabel label2 = new JLabel("Quiz Goal: ");
+    label2.setHorizontalAlignment(SwingConstants.CENTER);
+    if(Styles.user != null) {
+    switch(subject) {
+            case "Maths":
+                label2 = new JLabel(quizGoal+" "+Styles.user.getMaths().getQuizGoal(), SwingConstants.CENTER);
+               
+                break;
+            case "Science":
+                label2 = new JLabel(quizGoal+" "+Styles.user.getScience().getQuizGoal(), SwingConstants.CENTER);
+                break;  
+            case "Geography":
+                label2 = new JLabel(quizGoal+" "+Styles.user.getGeography().getQuizGoal(), SwingConstants.CENTER);
+                break;
+            case "Planets":
+                label2 = new JLabel(quizGoal+" "+Styles.user.getPlanets().getQuizGoal(), SwingConstants.CENTER);
+                break;
+            default:
+                label2 = new JLabel(quizGoal, SwingConstants.CENTER);
+                break;
+    }
+    } 
     JLabel label3 = new JLabel(quizCount, SwingConstants.CENTER);
 
     panel.add(label1);
@@ -166,102 +175,54 @@ btn3.addActionListener((ActionEvent e) -> {
     container.add(panel, gbc);
 }
 
-private void addSectionToFrame(JFrame frame, String topic, Color bgColor) {
-    JPanel section = new JPanel();
-    section.setBackground(bgColor);
-    section.setLayout(new BoxLayout(section, BoxLayout.Y_AXIS)); // Vertical layout
-
- 
-    JLabel headingLabel = new JLabel(topic, SwingConstants.CENTER);
-    headingLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    headingLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT); // Center the label horizontally
-    section.add(headingLabel);
-
-    section.add(Box.createRigidArea(new Dimension(0, 10)));
-
-    
-    JPanel streakPanel = new JPanel();
-    streakPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5)); // Minimal padding
-    streakPanel.setBackground(bgColor);
-
-    JLabel streakLabel = new JLabel("Current Streak Goal:");
-    JTextField streakTextField = new JTextField(10);
-
-    //Set button for goal
-    JButton setButton = new JButton("Set");
-    setButton.setBackground(Color.BLUE);
-    setButton.setForeground(Color.WHITE);
-    setButton.setFocusPainted(false);
-    setButton.setFont(new Font("Arial", Font.PLAIN, 12)); // Smaller font for the button
-
-    
-    setButton.addActionListener(e -> {
-        String streakGoal = streakTextField.getText();
-       
-    });
-
-    //Adding compontents
-    streakPanel.add(streakLabel);
-    streakPanel.add(streakTextField);
-    streakPanel.add(setButton);
-    section.add(streakPanel);
-
-
-    section.add(Box.createRigidArea(new Dimension(0, 10)));
-
-    //Custom goals
-    JPanel customGoalsPanel = new JPanel();
-    customGoalsPanel.setLayout(new BoxLayout(customGoalsPanel, BoxLayout.Y_AXIS));
-    customGoalsPanel.setBackground(bgColor);
-
-    
-    JLabel customGoalsHeading = new JLabel("Custom Goals", SwingConstants.LEFT);
-    customGoalsHeading.setFont(new Font("Arial", Font.BOLD, 14));
-    customGoalsHeading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-    customGoalsPanel.add(customGoalsHeading);
-
-    //Scrollable textArea for goals
-    JTextArea goalsArea = new JTextArea(5, 20);
-    goalsArea.setEditable(false);
-    goalsArea.setLineWrap(true);
-    goalsArea.setWrapStyleWord(true);
-    JScrollPane goalsScrollPane = new JScrollPane(goalsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Vertical scrollbar only
-    customGoalsPanel.add(goalsScrollPane);
-
-    
-    JPanel recordGoalHeaderPanel = new JPanel();
-    recordGoalHeaderPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5)); // Align left with small padding
-    recordGoalHeaderPanel.setBackground(bgColor);
-
-    //Save button
-    JLabel recordNewGoalHeading = new JLabel("Record New Goal");
-    recordNewGoalHeading.setFont(new Font("Arial", Font.BOLD, 14));
-    JButton saveButton = new JButton("Save");
-    //saveButton.setBackground(Color.GREEN);
-    saveButton.setForeground(Color.WHITE);
-    saveButton.setFocusPainted(false);
-
-    // Add label and button to the header panel
-    recordGoalHeaderPanel.add(recordNewGoalHeading);
-    recordGoalHeaderPanel.add(saveButton);
-
-    customGoalsPanel.add(recordGoalHeaderPanel);
-
-   //Text area for adding new goals
-    JTextArea newGoalArea = new JTextArea(3, 20);
-    newGoalArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-    customGoalsPanel.add(newGoalArea);
-
-    
-    saveButton.addActionListener(e -> {
-        String newGoal = newGoalArea.getText();
-     
-    });
-
-    section.add(customGoalsPanel);
-
-    frame.add(section);
+// Method to initialize all subjects at app launch
+public void initializeGoals() {
+    String[] subjects = {"Math", "Science", "Geography", "Planets"};
+    for (String subject : subjects) {
+        setGoals(subject); // Populate each subject's goals
+        System.out.println("Initialized goals for: " + subject);
+    }
 }
+
+// Existing setGoals method updated for single-subject updates
+public void setGoals(String subject) {
+    System.out.println("Set goals " + subject);
+    Component[] components = centerC.getComponents();
+    for (Component comp : components) {
+        if (comp instanceof JPanel) {
+            JPanel panel = (JPanel) comp;
+
+            // Identify the panel for the given subject
+            JLabel subjectLabel = (JLabel) panel.getComponent(0); // Assuming first label identifies the subject
+            
+            if (subjectLabel.getText().equals(subject)) {
+                JLabel label = (JLabel) panel.getComponent(1); // Assuming second label is the goal label
+                String quizGoal = "Quiz Goal: ";
+                switch (subject) {
+                    case "Math":
+                        label.setText(quizGoal + Styles.user.getMaths().getQuizGoal());
+                        break;
+                    case "Science":
+                        label.setText(quizGoal + Styles.user.getScience().getQuizGoal());
+                        break;
+                    case "Geography":
+                        label.setText(quizGoal + Styles.user.getGeography().getQuizGoal());
+                        break;
+                    case "Planets":
+                        label.setText(quizGoal + Styles.user.getPlanets().getQuizGoal());
+                        break;
+                    default:
+                        break;
+                }
+                break; // Exit loop after finding the panel
+            }
+        }
+    }
+    centerC.revalidate();
+    centerC.repaint();
+}
+
+
 
 private JPanel createScrollableDateGrid(LocalDate startDate, LocalDate today) {
     JPanel mainPanel = new JPanel();

@@ -6,6 +6,7 @@ package prototypetest;
 
 import Main.Account;
 import Main.IOHandler;
+import Main.Styles;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ public class Home extends javax.swing.JPanel {
          
    }
 
-    public Account user;
+    //public Account user;
     public Home() {
         initComponents();
        
@@ -1370,21 +1371,31 @@ public class Home extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_EmailInputActionPerformed
 
+    //This is the login button. It is what triggers the profile loading and GUI populating process for the tracker.
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here://Main button after creating account
-        String input = AccountNameInput.getText();
-       try {
-          user = IOHandler.loadState(input);
-          user.login();
-          user.updateUI(this);
-       } catch (IOException ex) {
-           Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-       } catch (ClassNotFoundException ex) {
-           Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-       }
-        CreateAccPanel.setVisible(false);
-        HomePanel.setVisible(true);
-        System.out.println(user.getName());
+        
+        String input = AccountNameInput.getText();//Getting the user's input username.
+        
+        //Temp method. Change if to if input.equals(user) inside a forloop looking at all users
+        if(input.equals("Owen")) {
+            //Try log the user in.
+            try {
+              Styles.setUser(IOHandler.loadState(input));//Sets the user as a global variable for easy access. 
+              Styles.user.login();//Running the login method in the user's object.
+              Styles.user.updateUI(this);//Calling the updateUI method in user's object, and passing this JPanel for access to the GUI.
+           } 
+            catch (IOException ex) {
+               Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+           } 
+            catch (ClassNotFoundException ex) {
+               Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+           }
+            CreateAccPanel.setVisible(false);//Turning off the login panel
+            HomePanel.setVisible(true);//Turning on the home panel.
+            } 
+        else {
+           System.out.println("Please Enter \"Owen\" into the \"Account Name\" Section.");
+        }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void EmailfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailfieldActionPerformed

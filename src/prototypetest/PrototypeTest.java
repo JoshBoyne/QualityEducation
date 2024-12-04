@@ -6,6 +6,7 @@ package prototypetest;
 
 import Main.Account;
 import Main.IOHandler;
+import Main.Styles;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
@@ -38,28 +39,26 @@ public class PrototypeTest {
                     @Override
                     public void windowClosing(WindowEvent e) {
                         try {
-                            IOHandler.saveState(home.user);
+                            IOHandler.saveState(Styles.user);
                             System.out.println("Save before close.");
                         } catch (IOException ex) {
+                            
                             Logger.getLogger(PrototypeTest.class.getName()).log(Level.SEVERE, null, ex);
+                            
+                        } finally {
+                            frame.dispose();
                         }
                         
-                        frame.dispose();
+                        
                     }
                 });
 
-
-           
-                
-
-                // Set the frame to pref size
                 frame.pack();
-
-                
                 frame.setVisible(true);
                 
-                /*
-                try {
+                
+                //This code will create a new user and save it. 
+               /* try {
                     Account test = new Account("Owen", "b");
                     try {
                         IOHandler.saveState(test);
@@ -71,8 +70,18 @@ public class PrototypeTest {
                 catch (IOException ex) {
                     Logger.getLogger(PrototypeTest.class.getName()).log(Level.SEVERE, null, ex);
                 }*/
-                
             }
         });
     }
 }
+//To do:
+/* - Add time checker to change the welcome message. 
+Set up account functionality. 
+Fix goals UI. 
+Add custom goal saving functionality. 
+Set up login frame coloring. 
+
+optional:
+set color of correct button for qotd. 
+
+*/

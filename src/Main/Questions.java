@@ -92,10 +92,10 @@ public class Questions {
     //////////////////////////////////////////////////////////////
     
     public String[] getDailyQuests() {
-        // Create an array to hold the quest strings
+        //Create an array to hold the quest strings
         String[] dailyQuests = new String[4];
         
-        // Add one quest from each topic map to the array
+        //Add one quest from each topic map to the array
         dailyQuests[0] = dailyMathsQuest.keySet().iterator().next(); // Maths
         dailyQuests[1] = dailyScienceQuest.keySet().iterator().next(); // Science
         dailyQuests[2] = dailyGeographyQuest.keySet().iterator().next(); // Geography

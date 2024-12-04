@@ -41,4 +41,8 @@ public class StreakContainer extends JPanel {
         }
        
     }
+    
+    public ArrayList<BarClass> getStreakBars() {
+        return this.streakBars;
+    }
 }
