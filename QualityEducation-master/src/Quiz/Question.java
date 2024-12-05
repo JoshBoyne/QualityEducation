@@ -6,9 +6,14 @@ package Quiz;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,14 @@ import java.util.List;
  * @author Josh
  */
 
-public class Question {
+
+/**
+ *
+ * @author Josh
+ */
+
+public class Question implements Serializable {
+    private static final long serialVersionUID = 1L; // Added for Serializable
     private String text;
     private String optionA;
     private String optionB;
@@ -84,9 +96,34 @@ public class Question {
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
-    
-
+     // Method to get questions by topic
     public static List<Question> getQuestionsByTopic(String topic) {
+    List<Question> questions;
+    String filePath = getFilePath(topic);
+    File file = new File(filePath);
+
+    if (file.exists()) {
+        System.out.println("Loading questions from file: " + file.getAbsolutePath());
+        // If file exists, load questions from file
+        questions = loadQuestionsFromFile(topic);
+        if (questions == null) {
+            System.out.println("Failed to load questions from file. Initializing hardcoded questions.");
+            // If loading failed, initialize with hardcoded questions
+            questions = initializeHardcodedQuestions(topic);
+            saveQuestionsToFile(topic, questions); // Save the initialized questions
+        }
+    } else {
+        System.out.println("Questions file not found. Initializing hardcoded questions and saving to file.");
+        // If file doesn't exist, use hardcoded questions and save them
+        questions = initializeHardcodedQuestions(topic);
+        saveQuestionsToFile(topic, questions);
+    }
+
+    return questions;
+}
+
+    // Initialize hardcoded questions
+    private static List<Question> initializeHardcodedQuestions(String topic) {
         List<Question> questions = new ArrayList<>();
 
         switch (topic) {
@@ -117,49 +154,69 @@ public class Question {
                 questions.add(new Question("What is the chemical symbol for carbon dioxide?", "CO", "CO2", "C2O", "O2", "B"));
                 questions.add(new Question("What is the chemical symbol for sodium?", "Na", "S", "N", "Cl", "A"));
                 questions.add(new Question("What is the chemical symbol for gold?", "Au", "Ag", "G", "Go", "A"));
+                break;
             default:
+                System.out.println("No hardcoded questions available for topic: " + topic);
                 break;
         }
         return questions;
     }
-    
-    //read and write for questions
-    public static void saveQuestionsToFile(String topic, List<Question> questions) throws IOException {
-        // Create the QuizData directory if it doesn't exist
-        String projectDir = System.getProperty("user.dir");
-        String packagePath = projectDir + File.separator + "src" + File.separator + "QuizData";
-        File packageDir = new File(packagePath);
 
-        if (!packageDir.exists()) {
-            if (packageDir.mkdirs()) {
-                System.out.println("QuizData package created at: " + packagePath);
+    // Save questions to .dat file
+    public static void saveQuestionsToFile(String topic, List<Question> questions) {
+        String filePath = getFilePath(topic);
+        File file = new File(filePath);
+
+        // Ensure the directory exists
+        File parentDir = file.getParentFile();
+        if (!parentDir.exists()) {
+            if (parentDir.mkdirs()) {
+                System.out.println("Directory created at: " + parentDir.getAbsolutePath());
             } else {
-                System.err.println("Failed to create QuizData package.");
+                System.err.println("Failed to create directory.");
                 return;
             }
         }
 
-        String filePath = packagePath + File.separator + "questions_" + topic + ".txt";
+        try (FileOutputStream fStream = new FileOutputStream(file);
+             ObjectOutputStream oStream = new ObjectOutputStream(fStream)) {
+            oStream.writeObject(questions);
+            System.out.println("Questions for " + topic + " saved to: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Error saving questions: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Load questions from .dat file
+    public static List<Question> loadQuestionsFromFile(String topic) {
+        List<Question> questions = null;
+        String filePath = getFilePath(topic);
         File file = new File(filePath);
+
         if (!file.exists()) {
-            file.createNewFile();
+            System.err.println("No questions file found for topic: " + topic);
+            return null;
         }
 
-        // Write questions to the file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Question question : questions) {
-                writer.write(question.getText() + "," +
-                        question.getOptionA() + "," +
-                        question.getOptionB() + "," +
-                        question.getOptionC() + "," +
-                        question.getOptionD() + "," +
-                        question.getCorrectAnswer());
-                writer.newLine();
-            }
+        try (FileInputStream fStream = new FileInputStream(file);
+             ObjectInputStream oStream = new ObjectInputStream(fStream)) {
+            questions = (List<Question>) oStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error loading questions: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        System.out.println("Questions for " + topic + " saved to: " + filePath);
+        return questions;
+    }
+
+   // Helper method to get the file path
+    private static String getFilePath(String topic) {
+        String projectDir = System.getProperty("user.dir");
+        String filePath = projectDir + File.separator + "src" + File.separator + "quizdata" + File.separator + "questions_" + topic + ".dat";
+        return filePath;
     }
     
     
+
 }

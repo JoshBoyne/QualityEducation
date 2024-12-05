@@ -1,5 +1,0 @@
-What is the chemical symbol for water?,H2O,O2,CO2,HO2,A
-What is the chemical symbol for oxygen?,O,O2,O3,H,B
-What is the chemical symbol for carbon dioxide?,CO,CO2,C2O,O2,B
-What is the chemical symbol for sodium?,Na,S,N,Cl,A
-What is the chemical symbol for gold?,Au,Ag,G,Go,A

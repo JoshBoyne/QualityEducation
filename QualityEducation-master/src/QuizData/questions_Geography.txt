@@ -1,5 +1,0 @@
-What is the capital of France?,Berlin,Paris,Rome,Madrid,B
-What is the capital of Germany?,Berlin,Vienna,Warsaw,Prague,A
-What is the capital of Italy?,Florence,Venice,Rome,Milan,C
-What is the capital of Spain?,Barcelona,Madrid,Lisbon,Valencia,B
-What is the capital of Portugal?,Porto,Lisbon,Madrid,Seville,B

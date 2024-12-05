@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import Quiz.Question;
 import Quiz.QuizManager;
+import Quiz.QuizTimer;
 import Quiz.Result;
 import java.io.IOException;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  *
  * @author jason, Josh, Owen
@@ -31,130 +34,119 @@ public class MainGUI extends javax.swing.JPanel {
         private List<Question> adminCurrentQuestions;
         private Timer quizTimer;
         private int elapsedSeconds = 0;
-    
-    
+        private static final Logger LOGGER = Logger.getLogger(MainGUI.class.getName());
+        
     
     
     
     public MainGUI() {
         initComponents();
-        currentQuestions = new ArrayList<>(); 
-        initializeButtonActions();
-        currentQuestionIndex = 0;    
-        userAnswers = new HashMap<>();
-         quizResult = new Result();
-        RManager rManager = new RManager(); //instance of RManager
-        rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
-        
-         // initialise quizManager
-        quizManager = new QuizManager();
-        
-        
-    
-        HomePanel.setVisible(false);
-        StartPanel.setVisible(true);
-        CreateAccPanel.setVisible(false);
-        LearningPanel.setVisible(false);
-        QuizPanel.setVisible(false);
-        AdminPanel.setVisible(false);
-        AdminQuizPanel.setVisible(false);
-        
-        
-        quizTA1.setEditable(false);
-        adminQuestionTA.setEditable(true);
-        
-        
-        aBTN.setEnabled(false);
-        bBTN.setEnabled(false);
-        cBTN.setEnabled(false);
-        dBTN.setEnabled(false);
-        quizNextBTN.setEnabled(false);
-        quizPrevBTN.setEnabled(false);
-        quizSubmitBTN1.setEnabled(false);
-        
-        
-    
+
+    // Initialize quizManager before using it
+    quizManager = new QuizManager(); 
+
+    // Fetch questions from the QuizManager
+    currentQuestions = quizManager.getQuestions();
+    adminCurrentQuestions = quizManager.getQuestions();
+
+    // Initialize other components and variables
+    initializeButtonActions();
+    currentQuestionIndex = 0;
+    adminCurrentQuestionIndex = 0;
+    userAnswers = new HashMap<>();
+    quizResult = new Result();
+
+    // Set up UI elements
+    RManager rManager = new RManager();
+    rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");
+
+    HomePanel.setVisible(false);
+    StartPanel.setVisible(true);
+    CreateAccPanel.setVisible(false);
+    LearningPanel.setVisible(false);
+    QuizPanel.setVisible(false);
+    AdminPanel.setVisible(false);
+    AdminQuizPanel.setVisible(false);
+
+    quizTA1.setEditable(false);
+    adminQuestionTA.setEditable(true);
+
+    aBTN.setEnabled(false);
+    bBTN.setEnabled(false);
+    cBTN.setEnabled(false);
+    dBTN.setEnabled(false);
+    quizNextBTN.setEnabled(false);
+    quizPrevBTN.setEnabled(false);
+    quizSubmitBTN1.setEnabled(false);
     }
 private void adminLoadQuestion() {
     if (adminCurrentQuestions != null && !adminCurrentQuestions.isEmpty() && adminCurrentQuestionIndex >= 0) {
         // Get the current question
         Question currentQuestion = adminCurrentQuestions.get(adminCurrentQuestionIndex);
 
-        // Display the question text 
-        adminQuestionTA.setText(currentQuestion.getText());
+        // Build the question and options string
+        StringBuilder questionContent = new StringBuilder();
+        questionContent.append("Question: ").append(currentQuestion.getText()).append("\n\n")
+                       .append("A) ").append(currentQuestion.getOptionA()).append("\n")
+                       .append("B) ").append(currentQuestion.getOptionB()).append("\n")
+                       .append("C) ").append(currentQuestion.getOptionC()).append("\n")
+                       .append("D) ").append(currentQuestion.getOptionD()).append("\n");
 
-      
-        StringBuilder answerContent = new StringBuilder();
-        answerContent.append(currentQuestion.getText()).append("\n\n");
-        answerContent.append("A) ").append(currentQuestion.getOptionA()).append("\n");
-        answerContent.append("B) ").append(currentQuestion.getOptionB()).append("\n");
-        answerContent.append("C) ").append(currentQuestion.getOptionC()).append("\n");
-        answerContent.append("D) ").append(currentQuestion.getOptionD()).append("\n");
+        // Set question and options to adminQuestionTA (overwrite existing content)
+        adminQuestionTA.setText(questionContent.toString());
 
-        
-        adminAnswerTA.setText(answerContent.toString());
-
-       
-        adminQuizBG.clearSelection();
-
-        
+        // Display correct answer in adminAnswerTA
         String correctAnswer = currentQuestion.getCorrectAnswer();
+        if (correctAnswer != null && !correctAnswer.trim().isEmpty()) {
+            adminAnswerTA.setText("Correct Answer: " + correctAnswer);
+        } else {
+            adminAnswerTA.setText("Correct Answer: Not set");
+        }
+
+        // Clear and set the correct radio button
+        adminQuizBG.clearSelection();
         if (correctAnswer != null) {
-            switch (correctAnswer) {
-                case "A":
-                    adminABTN.setSelected(true);
-                    break;
-                case "B":
-                    adminBBTN.setSelected(true);
-                    break;
-                case "C":
-                    adminCBTN.setSelected(true);
-                    break;
-                case "D":
-                    adminDBTN.setSelected(true);
-                    break;
+            switch (correctAnswer.toUpperCase()) { // Ensure case consistency
+                case "A": adminABTN.setSelected(true); break;
+                case "B": adminBBTN.setSelected(true); break;
+                case "C": adminCBTN.setSelected(true); break;
+                case "D": adminDBTN.setSelected(true); break;
+                default: break;
             }
         }
     } else {
+        // No questions found scenario
         adminQuestionTA.setText("");
-        adminAnswerTA.setText("");
+        adminAnswerTA.setText("Correct Answer: Not set");
         adminQuizBG.clearSelection();
     }
 }
-
  private void handleAdminSubmitTopic() {
     adminSubmitTopicBTN.addActionListener(e -> {
-        String selectedTopic = (String) topicCB.getSelectedItem();  // Get the selected topic
-        currentQuestions = Question.getQuestionsByTopic(selectedTopic); 
-        currentQuestionIndex = 0;  // Start from the first question
-        userAnswers.clear();  // Clear any previous answers
-        loadQuestion();  // Load the first question into the GUI
-        enableQuizControls();  
+        String selectedTopic = (String) adminQuizCB.getSelectedItem();  // Get the selected topic
+        adminCurrentQuestions = Question.getQuestionsByTopic(selectedTopic); 
+        adminCurrentQuestionIndex = 0;  // Start from the first question
+        adminLoadQuestion();  // Load the first question into the admin GUI
+        enableAdminControls();  // Enable controls for navigation and editing
     });
 }
 
-// Action for the Next button
 private void handleAdminNextButton() {
     adminNextBTN.addActionListener(e -> {
-        saveAnswer();  // Save the current answer
-
-        if (currentQuestionIndex < currentQuestions.size() - 1) {
-            currentQuestionIndex++;  // Move to the next question
-            loadQuestion();  // Load the next question
+        if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
+            adminCurrentQuestionIndex++;  // Move to the next question
+            adminLoadQuestion();  // Load the next question
         } else {
             JOptionPane.showMessageDialog(this, "You are on the last question.", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
     });
 }
 
-// Action for the Previous button
 private void handleAdminPreviousButton() {
     adminPrevBTN.addActionListener(e -> {
-        saveAnswer();  // Save the current answer
-
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;  // Go to the previous question
-            loadQuestion();  // Load the previous question
+        if (adminCurrentQuestionIndex > 0) {
+            adminCurrentQuestionIndex--;  // Go to the previous question
+            adminLoadQuestion();  // Load the previous question
         } else {
             JOptionPane.showMessageDialog(this, "You are on the first question.", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -163,17 +155,20 @@ private void handleAdminPreviousButton() {
 
  
 private void enableAdminControls() {
-    
     adminABTN.setEnabled(true);
     adminBBTN.setEnabled(true);
     adminCBTN.setEnabled(true);
     adminDBTN.setEnabled(true);
 
-    
     adminNextBTN.setEnabled(true);
     adminPrevBTN.setEnabled(true);
 
     adminQuizConfirmBTN.setEnabled(true);
+    adminCreateBTN.setEnabled(true);
+    adminUpdateBTN.setEnabled(true);
+    adminDeleteBTN.setEnabled(true);
+    adminClearBTN.setEnabled(true);
+    adminSubmitAnswerBTN.setEnabled(true);
 }
 
 
@@ -181,21 +176,18 @@ private void enableAdminControls() {
 
 // Method to load the current question into the GUI
 private void loadQuestion() {
-    try {
+      try {
         if (currentQuestions != null && !currentQuestions.isEmpty()) {
             Question currentQuestion = currentQuestions.get(currentQuestionIndex);
 
-            // Display the current question and options
             quizTA1.setText(currentQuestion.getText() + "\n\n" +
                             "A: " + currentQuestion.getOptionA() + "\n" +
                             "B: " + currentQuestion.getOptionB() + "\n" +
                             "C: " + currentQuestion.getOptionC() + "\n" +
                             "D: " + currentQuestion.getOptionD());
 
-            // Clear radio button selection
-            quizBG.clearSelection();
+            quizBG.clearSelection(); // Clear previous selection
 
-            // Restore saved answer
             String savedAnswer = userAnswers.get(currentQuestionIndex);
             if (savedAnswer != null) {
                 switch (savedAnswer) {
@@ -338,15 +330,55 @@ private void initializeButtonActions() {
 }
     
     private void finishQuiz() {
-    // Existing code to handle quiz completion...
-    // ...
+    // Calculate the score
+    quizResult.calculateScore(userAnswers, currentQuestions);
+    String summary = quizResult.getSummary();
 
     // Stop the timer
     stopQuizTimer();
 
+    // Get the elapsed time in seconds
+    int timeTakenSeconds = elapsedSeconds;
+
     // Optionally, display the total time taken
-    JOptionPane.showMessageDialog(this, "You completed the quiz in " + quizTimerLBL.getText(), "Quiz Completed", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(this, "You completed the quiz in " + quizTimerLBL.getText() + ".\n" + summary, "Quiz Completed", JOptionPane.INFORMATION_MESSAGE);
+
+    // Disable quiz controls
+    disableQuizControls();
+
+    // Optionally, display the summary in the text area
+    quizTA1.setText(summary + "\nTime Taken: " + quizTimerLBL.getText());
+
+    // Re-enable the "Submit Topic" button for future quizzes
+    submitTopicBTN.setEnabled(true);
+
+    // Log quiz completion
+    LOGGER.log(Level.INFO, "finishQuiz() called. Quiz completed.");
+
+    // Save the quiz time to quizTimes.dat
+    String selectedTopic = (String) topicCB.getSelectedItem(); // Get the selected topic
+    if (selectedTopic != null) {
+        // Create a QuizTimer object
+        QuizTimer quizTimer = new QuizTimer(timeTakenSeconds, selectedTopic);
+
+        // Save the QuizTimer object
+        QuizTimer.saveQuizTimerToFile(quizTimer);
+        LOGGER.log(Level.INFO, "QuizTimer saved: " + quizTimer.toString());
+    } else {
+        LOGGER.log(Level.WARNING, "No topic selected when saving quiz time.");
+    }
 }
+    private void disableQuizControls() {
+    aBTN.setEnabled(false);
+    bBTN.setEnabled(false);
+    cBTN.setEnabled(false);
+    dBTN.setEnabled(false);
+    quizNextBTN.setEnabled(false);
+    quizPrevBTN.setEnabled(false);
+    quizSubmitBTN1.setEnabled(false);
+}
+    
+    
     
     
     @SuppressWarnings("unchecked")
@@ -1179,7 +1211,7 @@ private void initializeButtonActions() {
 
         quizTA1.setColumns(20);
         quizTA1.setRows(5);
-        quizTA1.setText("Welcome!\nTo start the quiz please select the \"Submit Topic\" button.\n\nTo answer the questions please choose one of the radio buttons below (A, B, C, D).\n\nPlease then press \"Submit\" to confirm your answer, then go onto the next Question.\n\nThank You!");
+        quizTA1.setText("Welcome!\n- To start the quiz please select the \"Submit Topic\" button.\n- To answer the questions please choose one of the radio buttons below (A, B, C, D).\n- Please then press \"Submit\" to confirm your answer, then go onto the next Question.\n- The Timer will start when you select the \"Submit Topic\" button, to stop the timer press the \n  \"Stop Time\" button in the top right corner.\n\nThank You!");
         jScrollPane3.setViewportView(quizTA1);
 
         QuizPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 540, 150));
@@ -1890,45 +1922,34 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_quizNextBTNActionPerformed
 
     private void quizSubmitBTN1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizSubmitBTN1ActionPerformed
-        // TODO add your handling code here:
-     if (currentQuestions == null) {
-        JOptionPane.showMessageDialog(this, "Please start the quiz by selecting a topic and pressing Submit.", "Error", JOptionPane.ERROR_MESSAGE);
+         if (currentQuestions == null || currentQuestions.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No questions loaded. Please select a topic.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
-        
     }
 
-    saveAnswer(); // Save the current answer
+    // Save the current answer
+    saveAnswer();
 
-    if (currentQuestionIndex < currentQuestions.size() - 1) {
-        currentQuestionIndex++; // Move to the next question
-        loadQuestion(); // Load the next question
+    // Check if it's the last question
+    if (currentQuestionIndex == currentQuestions.size() - 1) {
+        // Finish the quiz
+        finishQuiz();
     } else {
-        // End of the quiz
-        quizResult.calculateScore(userAnswers, currentQuestions); // Calculate the score
-        String summary = quizResult.getSummary(); // Get the summary
-        JOptionPane.showMessageDialog(this, summary, "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
-
-        
-        aBTN.setEnabled(false);
-        bBTN.setEnabled(false);
-        cBTN.setEnabled(false);
-        dBTN.setEnabled(false);
-        quizNextBTN.setEnabled(false);
-        quizPrevBTN.setEnabled(false);
-        quizSubmitBTN1.setEnabled(false);
-
-        quizTA1.setText(summary);
+        // Move to the next question
+        currentQuestionIndex++;
+        loadQuestion();
     }
     }//GEN-LAST:event_quizSubmitBTN1ActionPerformed
 
     private void submitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitTopicBTNActionPerformed
-      
-    if (userAnswers == null) {
-        userAnswers = new HashMap<>();
+      String selectedTopic = (String) topicCB.getSelectedItem();
+
+    if (selectedTopic == null || selectedTopic.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please select a valid topic.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
 
-    String selectedTopic = (String) topicCB.getSelectedItem();
-
+    // Load questions from the .dat file
     currentQuestions = Question.getQuestionsByTopic(selectedTopic);
 
     if (currentQuestions == null || currentQuestions.isEmpty()) {
@@ -1936,18 +1957,24 @@ private void initializeButtonActions() {
         return;
     }
 
+    // Reset the question index
     currentQuestionIndex = 0;
-    System.out.println("userAnswers initialized: " + (userAnswers != null));
-    userAnswers.clear(); 
 
+    // Clear previous user answers
+    userAnswers.clear();
+
+    // Load the first question
     loadQuestion();
 
+    // Enable quiz controls
     enableQuizControls();
+
+    // Start the quiz timer
     startQuizTimer();
     }//GEN-LAST:event_submitTopicBTNActionPerformed
 
     private void adminNextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminNextBTNActionPerformed
-        if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
+         if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
         adminCurrentQuestionIndex++;
         adminLoadQuestion();
     } else {
@@ -1957,7 +1984,7 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminNextBTNActionPerformed
 
     private void adminPrevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminPrevBTNActionPerformed
-       if (adminCurrentQuestionIndex > 0) {
+        if (adminCurrentQuestionIndex > 0) {
         adminCurrentQuestionIndex--;
         adminLoadQuestion();
     } else {
@@ -1966,8 +1993,9 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminPrevBTNActionPerformed
 
     private void adminUpdateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUpdateBTNActionPerformed
-         if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
+            if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
         try {
+            // Get the updated question text (excluding options)
             String updatedQuestionText = adminQuestionTA.getText().trim();
 
             if (updatedQuestionText.isEmpty()) {
@@ -1975,15 +2003,19 @@ private void initializeButtonActions() {
                 return;
             }
 
+            // Get the current question object
             Question currentQuestion = adminCurrentQuestions.get(adminCurrentQuestionIndex);
 
+            // Update the question text
             currentQuestion.setText(updatedQuestionText);
 
+            // Prompt for new options using input dialogs
             String optionA = JOptionPane.showInputDialog(this, "Enter option A:", currentQuestion.getOptionA());
             String optionB = JOptionPane.showInputDialog(this, "Enter option B:", currentQuestion.getOptionB());
             String optionC = JOptionPane.showInputDialog(this, "Enter option C:", currentQuestion.getOptionC());
             String optionD = JOptionPane.showInputDialog(this, "Enter option D:", currentQuestion.getOptionD());
 
+            // Validate the inputs
             if (optionA == null || optionA.trim().isEmpty() ||
                 optionB == null || optionB.trim().isEmpty() ||
                 optionC == null || optionC.trim().isEmpty() ||
@@ -1992,13 +2024,20 @@ private void initializeButtonActions() {
                 return;
             }
 
+            // Update the options
             currentQuestion.setOptionA(optionA.trim());
             currentQuestion.setOptionB(optionB.trim());
             currentQuestion.setOptionC(optionC.trim());
             currentQuestion.setOptionD(optionD.trim());
 
+            // Save the updated questions to the .dat file
+            String selectedTopic = (String) adminQuizCB.getSelectedItem();
+            Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
+
+            // Refresh the admin UI once
             adminLoadQuestion();
 
+            // Show success message once
             JOptionPane.showMessageDialog(this, "Question updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
@@ -2007,11 +2046,11 @@ private void initializeButtonActions() {
     } else {
         JOptionPane.showMessageDialog(this, "No question selected to update.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-        
     }//GEN-LAST:event_adminUpdateBTNActionPerformed
 
     private void adminCreateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminCreateBTNActionPerformed
-       try {
+        try {
+        // Get the question text only
         String questionText = adminQuestionTA.getText().trim();
 
         if (questionText.isEmpty()) {
@@ -2019,11 +2058,13 @@ private void initializeButtonActions() {
             return;
         }
 
+        // Prompt for options using input dialogs
         String optionA = JOptionPane.showInputDialog(this, "Enter option A:");
         String optionB = JOptionPane.showInputDialog(this, "Enter option B:");
         String optionC = JOptionPane.showInputDialog(this, "Enter option C:");
         String optionD = JOptionPane.showInputDialog(this, "Enter option D:");
 
+        // Validate the inputs
         if (optionA == null || optionA.trim().isEmpty() ||
             optionB == null || optionB.trim().isEmpty() ||
             optionC == null || optionC.trim().isEmpty() ||
@@ -2032,14 +2073,23 @@ private void initializeButtonActions() {
             return;
         }
 
+        // Create the new question with no correct answer set yet
         Question newQuestion = new Question(questionText, optionA.trim(), optionB.trim(), optionC.trim(), optionD.trim(), null);
 
+        // Add the new question to the list
         adminCurrentQuestions.add(newQuestion);
 
+        // Update the current question index to the new question
         adminCurrentQuestionIndex = adminCurrentQuestions.size() - 1;
 
+        // Save the updated list to the .dat file
+        String selectedTopic = (String) adminQuizCB.getSelectedItem();
+        Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
+
+        // Load the newly created question in the UI
         adminLoadQuestion();
 
+        // Show success message
         JOptionPane.showMessageDialog(this, "New question created successfully. Please set the correct answer in the Answers tab.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
     } catch (Exception ex) {
@@ -2048,65 +2098,64 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminCreateBTNActionPerformed
 
     private void adminDeleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDeleteBTNActionPerformed
-       
-    if (adminCurrentQuestions != null && !adminCurrentQuestions.isEmpty()) {
-       
-        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this question?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            
+        if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
+        try {
+            // Confirm deletion with the user
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this question?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return; // User chose not to delete
+            }
+
+            // Remove the question from the list
             adminCurrentQuestions.remove(adminCurrentQuestionIndex);
-            
-           
-            if (adminCurrentQuestionIndex >= adminCurrentQuestions.size()) {
-                
+
+            // Save the updated list to the file
+            String selectedTopic = (String) adminQuizCB.getSelectedItem();
+            Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
+
+            // Adjust the currentQuestionIndex
+            if (adminCurrentQuestions.isEmpty()) {
+                adminCurrentQuestionIndex = -1;
+            } else if (adminCurrentQuestionIndex >= adminCurrentQuestions.size()) {
                 adminCurrentQuestionIndex = adminCurrentQuestions.size() - 1;
             }
-            
-           
-            if (adminCurrentQuestions.isEmpty()) {
-                // 
-                adminQuestionTA.setText("");
-                adminQuizBG.clearSelection();
-                
-                
-                adminNextBTN.setEnabled(false);
-                adminPrevBTN.setEnabled(false);
-                adminUpdateBTN.setEnabled(false);
-                adminDeleteBTN.setEnabled(false);
-                
-                JOptionPane.showMessageDialog(this, "All questions have been deleted.", "Information", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-               
-                adminLoadQuestion();
-            }
+
+            // Refresh the admin UI to show the next available question
+            adminLoadQuestion();
+
+            // Inform the user of successful deletion
+            JOptionPane.showMessageDialog(this, "Question deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "An error occurred while deleting the question: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
-        JOptionPane.showMessageDialog(this, "No question to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "No question selected to delete.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_adminDeleteBTNActionPerformed
 
     private void adminSubmitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSubmitTopicBTNActionPerformed
-       
-    String selectedTopic = (String) adminQuizCB.getSelectedItem();
+        String selectedTopic = (String) adminQuizCB.getSelectedItem();
 
-    
-    
-    adminCurrentQuestions = Question.getQuestionsByTopic(selectedTopic);
+        System.out.println("Admin selected topic: " + selectedTopic);
 
-    if (adminCurrentQuestions == null || adminCurrentQuestions.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        adminCurrentQuestions = Question.getQuestionsByTopic(selectedTopic);
 
-    // Reset index
-    adminCurrentQuestionIndex = 0;
+        if (adminCurrentQuestions == null || adminCurrentQuestions.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // Load the first question
-    adminLoadQuestion();
+        System.out.println("Loaded " + adminCurrentQuestions.size() + " questions for topic: " + selectedTopic);
 
-    // Enable the admin controls
-    enableAdminControls();
+        // Reset index
+        adminCurrentQuestionIndex = 0;
 
+        // Load the first question
+        adminLoadQuestion();
+
+        // Enable the admin controls
+        enableAdminControls();
     }//GEN-LAST:event_adminSubmitTopicBTNActionPerformed
 
     private void adminSubmitAnswerBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSubmitAnswerBTNActionPerformed
@@ -2126,28 +2175,35 @@ private void initializeButtonActions() {
                 return;
             }
 
+            // Set the correct answer in the Question object
             Question currentQuestion = adminCurrentQuestions.get(adminCurrentQuestionIndex);
             currentQuestion.setCorrectAnswer(selectedAnswer);
 
-            JOptionPane.showMessageDialog(this, "Correct answer submitted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            // Save the updated questions to the .dat file
+            String selectedTopic = (String) adminQuizCB.getSelectedItem();
+            Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
+
+            // Refresh the admin UI to show the correct answer
+            adminLoadQuestion();
+
+            // Show success message
+            JOptionPane.showMessageDialog(this, "Correct answer set successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
-        JOptionPane.showMessageDialog(this, "No question selected to submit an answer for.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "No question selected to set the correct answer.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_adminSubmitAnswerBTNActionPerformed
 
     private void adminClearBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminClearBTNActionPerformed
-        // TODO add your handling code here:
-    adminQuestionTA.setText("");
-    
-    adminCurrentQuestionIndex = -1;
-    
-    adminQuestionTA.setEditable(true);
-    
-    adminQuestionTA.requestFocus();
+        adminQuestionTA.setText("");
+        adminQuizBG.clearSelection();
+        adminABTN.setSelected(false);
+        adminBBTN.setSelected(false);
+        adminCBTN.setSelected(false);
+        adminDBTN.setSelected(false);
     }//GEN-LAST:event_adminClearBTNActionPerformed
 
     private void stopTimerBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopTimerBTNActionPerformed

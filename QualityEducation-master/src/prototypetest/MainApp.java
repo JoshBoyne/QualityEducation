@@ -16,7 +16,9 @@ import javax.swing.JFrame;
 import Quiz.Question;
 /**
  *
- * @author jason, josh, owen
+ * @author Jason Donnelly  
+ * @author Joshua Boyne 23343338
+ * @author Owen Brown
  */
 public class MainApp { 
 
