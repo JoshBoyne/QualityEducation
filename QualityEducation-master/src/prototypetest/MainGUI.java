@@ -25,7 +25,7 @@ import java.util.logging.Level;
  */
 public class MainGUI extends javax.swing.JPanel {
         private QuizManager quizManager;
-        // Instance variables for managing topics, questions, and user answers
+        //instance variables
         private List<Question> currentQuestions; // List of questions for the selected topic
         private int currentQuestionIndex;
         private Map<Integer, String> userAnswers;
@@ -35,28 +35,28 @@ public class MainGUI extends javax.swing.JPanel {
         private Timer quizTimer;
         private int elapsedSeconds = 0;
         private static final Logger LOGGER = Logger.getLogger(MainGUI.class.getName());
-        
+        private Category category; 
     
     
     
     public MainGUI() {
         initComponents();
 
-    // Initialize quizManager before using it
+    // initialising quizmanager before using it
     quizManager = new QuizManager(); 
 
-    // Fetch questions from the QuizManager
+    // gets questions from quizmanager
     currentQuestions = quizManager.getQuestions();
     adminCurrentQuestions = quizManager.getQuestions();
 
-    // Initialize other components and variables
+    // initialise other variables and components
     initializeButtonActions();
     currentQuestionIndex = 0;
     adminCurrentQuestionIndex = 0;
     userAnswers = new HashMap<>();
     quizResult = new Result();
 
-    // Set up UI elements
+    
     RManager rManager = new RManager();
     rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");
 
@@ -78,13 +78,85 @@ public class MainGUI extends javax.swing.JPanel {
     quizNextBTN.setEnabled(false);
     quizPrevBTN.setEnabled(false);
     quizSubmitBTN1.setEnabled(false);
+    
+    //for the FeedbackForm class
+         new FeedbackForm(Emailfield, QtArea, CFconfirmButton);
+         category = new Category("categories.txt");
+           CRUDListeners();
+    
     }
+    
+    private void CRUDListeners() {
+        //action listener for create button
+        CreateCRUDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newCategory = JOptionPane.showInputDialog("Enter your new Note:"); //prompt user 
+                if (newCategory != null && !newCategory.trim().isEmpty()) {
+                    category.create(newCategory);
+                    JOptionPane.showMessageDialog(null, "Note added successfully!");
+                    updateTextArea();
+                }
+            }
+        });
+
+        // Read Button, action lsitener for (read button)
+        ReadCRUDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTextArea(); //call method to update text area 
+            }
+        });
+
+        // Update Button
+        UpdateCRUDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //prompt for index to update
+                String indexStr = JOptionPane.showInputDialog("Enter index of your note to update:");
+                try {
+                    int index = Integer.parseInt(indexStr); //parse inout string to int
+                    String updatedCategory = JOptionPane.showInputDialog("Enter new notes value:");
+                   
+                    if (updatedCategory != null && !updatedCategory.trim().isEmpty()) { //inoput validation
+                        category.update(index, updatedCategory); //update note at index
+                        JOptionPane.showMessageDialog(null, "Notes updated successfully!"); //notify user 
+                        updateTextArea();  //refresh text area 
+                    }
+                } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                    JOptionPane.showMessageDialog(null, "Invalid index or input. Please try again.");
+                }
+            }
+        });
+
+        // Delete Button
+        DeleteCRUDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String indexStr = JOptionPane.showInputDialog("Enter index of your notes to delete:");
+                try {
+                    int index = Integer.parseInt(indexStr);
+                    category.delete(index);
+                    JOptionPane.showMessageDialog(null, "Note deleted successfully!");
+                    updateTextArea();
+                } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                    JOptionPane.showMessageDialog(null, "Invalid index. Please try again.");
+                }
+            }
+        });
+    }
+    // Update the jTextArea1 with the current list, make sure this works (self note)
+    private void updateTextArea() {
+        jTextArea1.setText(category.readAll());
+    }
+    
 private void adminLoadQuestion() {
+    //method that loads the questions in the admin page
     if (adminCurrentQuestions != null && !adminCurrentQuestions.isEmpty() && adminCurrentQuestionIndex >= 0) {
         // Get the current question
         Question currentQuestion = adminCurrentQuestions.get(adminCurrentQuestionIndex);
 
-        // Build the question and options string
+        // makes the question and the options
         StringBuilder questionContent = new StringBuilder();
         questionContent.append("Question: ").append(currentQuestion.getText()).append("\n\n")
                        .append("A) ").append(currentQuestion.getOptionA()).append("\n")
@@ -92,7 +164,7 @@ private void adminLoadQuestion() {
                        .append("C) ").append(currentQuestion.getOptionC()).append("\n")
                        .append("D) ").append(currentQuestion.getOptionD()).append("\n");
 
-        // Set question and options to adminQuestionTA (overwrite existing content)
+        // Set question and options to adminQuestionTA 
         adminQuestionTA.setText(questionContent.toString());
 
         // Display correct answer in adminAnswerTA
@@ -115,7 +187,7 @@ private void adminLoadQuestion() {
             }
         }
     } else {
-        // No questions found scenario
+        // No questions found 
         adminQuestionTA.setText("");
         adminAnswerTA.setText("Correct Answer: Not set");
         adminQuizBG.clearSelection();
@@ -131,6 +203,7 @@ private void adminLoadQuestion() {
     });
 }
 
+ //method that handles logic for next button
 private void handleAdminNextButton() {
     adminNextBTN.addActionListener(e -> {
         if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
@@ -141,7 +214,7 @@ private void handleAdminNextButton() {
         }
     });
 }
-
+//method that handles logic for previous button
 private void handleAdminPreviousButton() {
     adminPrevBTN.addActionListener(e -> {
         if (adminCurrentQuestionIndex > 0) {
@@ -153,7 +226,7 @@ private void handleAdminPreviousButton() {
     });
 }
 
- 
+ //enables the controls in the admin page - buttons, radio buttons 
 private void enableAdminControls() {
     adminABTN.setEnabled(true);
     adminBBTN.setEnabled(true);
@@ -174,7 +247,7 @@ private void enableAdminControls() {
 
 
 
-// Method to load the current question into the GUI
+// method to load the question into the gui
 private void loadQuestion() {
       try {
         if (currentQuestions != null && !currentQuestions.isEmpty()) {
@@ -186,7 +259,7 @@ private void loadQuestion() {
                             "C: " + currentQuestion.getOptionC() + "\n" +
                             "D: " + currentQuestion.getOptionD());
 
-            quizBG.clearSelection(); // Clear previous selection
+            quizBG.clearSelection(); // Clear previous answers
 
             String savedAnswer = userAnswers.get(currentQuestionIndex);
             if (savedAnswer != null) {
@@ -202,6 +275,8 @@ private void loadQuestion() {
         JOptionPane.showMessageDialog(this, "Error loading question: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
+//method that enables the controls of the buttons and radio buttons in the quiz page
 private void enableQuizControls() {
     aBTN.setEnabled(true);
     bBTN.setEnabled(true);
@@ -213,6 +288,7 @@ private void enableQuizControls() {
 
     quizSubmitBTN1.setEnabled(true);
 }
+
 // Method to save the selected answer
 private void saveAnswer() {
     if (aBTN.isSelected()) {
@@ -226,7 +302,7 @@ private void saveAnswer() {
     }
 }
 
-// Action for the Submit Topic button
+// logic for submit topic buttons
 private void handleSubmitTopic() {
     submitTopicBTN.addActionListener(e -> {
         String selectedTopic = (String) topicCB.getSelectedItem();  // Get the selected topic
@@ -238,7 +314,7 @@ private void handleSubmitTopic() {
     });
 }
 
-// Action for the Next button
+// logic for next button
 private void handleNextButton() {
     quizNextBTN.addActionListener(e -> {
         saveAnswer();  // Save the current answer
@@ -252,7 +328,7 @@ private void handleNextButton() {
     });
 }
 
-// Action for the Previous button
+// logic for the previous button
 private void handlePreviousButton() {
     quizPrevBTN.addActionListener(e -> {
         saveAnswer();  // Save the current answer
@@ -266,7 +342,7 @@ private void handlePreviousButton() {
     });
 }
 
-// Action for the Submit Answers button
+// logic for the submit answers button
 private void handleSubmitAnswers() {
     quizSubmitBTN1.addActionListener(e -> {
         saveAnswer();  // Save the current answer
@@ -274,7 +350,7 @@ private void handleSubmitAnswers() {
     });
 }
 
-// Method to initialise button actions
+// method that initialises the buttons
 private void initializeButtonActions() {
     handleSubmitTopic();
     handleNextButton();
@@ -291,13 +367,13 @@ private void initializeButtonActions() {
 }
     
     private void startQuizTimer() {
-    // Reset elapsed time
+    // Reset time
     elapsedSeconds = 0;
 
     // Update the timer display
     updateTimerDisplay();
 
-    // Initialize the timer
+    // Initialise the timer
     quizTimer = new Timer(1000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -315,11 +391,11 @@ private void initializeButtonActions() {
     // Enable the Stop Timer button
     stopTimerBTN.setEnabled(true);
 }
-    
+    //method for timer display
     private void updateTimerDisplay() {
     int minutes = elapsedSeconds / 60;
     int seconds = elapsedSeconds % 60;
-    String timeFormatted = String.format("%02d:%02d", minutes, seconds);
+    String timeFormatted = String.format("%02d:%02d", minutes, seconds);//time format
     quizTimerLBL.setText(timeFormatted);
 }
     
@@ -328,7 +404,7 @@ private void initializeButtonActions() {
         quizTimer.stop();
     }
 }
-    
+    //finish quiz method
     private void finishQuiz() {
     // Calculate the score
     quizResult.calculateScore(userAnswers, currentQuestions);
@@ -337,16 +413,16 @@ private void initializeButtonActions() {
     // Stop the timer
     stopQuizTimer();
 
-    // Get the elapsed time in seconds
+    // Get the time in seconds
     int timeTakenSeconds = elapsedSeconds;
 
-    // Optionally, display the total time taken
+    //display the total time taken
     JOptionPane.showMessageDialog(this, "You completed the quiz in " + quizTimerLBL.getText() + ".\n" + summary, "Quiz Completed", JOptionPane.INFORMATION_MESSAGE);
 
-    // Disable quiz controls
+    // disable quiz controls
     disableQuizControls();
 
-    // Optionally, display the summary in the text area
+    // display the summary in the text area
     quizTA1.setText(summary + "\nTime Taken: " + quizTimerLBL.getText());
 
     // Re-enable the "Submit Topic" button for future quizzes
@@ -368,6 +444,7 @@ private void initializeButtonActions() {
         LOGGER.log(Level.WARNING, "No topic selected when saving quiz time.");
     }
 }
+    //method to disable quiz controls
     private void disableQuizControls() {
     aBTN.setEnabled(false);
     bBTN.setEnabled(false);
@@ -424,15 +501,14 @@ private void initializeButtonActions() {
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
         CategoryP = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        CreateCRUDb = new javax.swing.JButton();
+        ReadCRUDb = new javax.swing.JButton();
+        UpdateCRUDb = new javax.swing.JButton();
+        DeleteCRUDb = new javax.swing.JButton();
         ContactPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         QtArea = new javax.swing.JTextArea();
@@ -849,7 +925,10 @@ private void initializeButtonActions() {
         jPanel4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 340, -1));
 
         jLabel21.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
-        jLabel21.setText("Placeholder for other links and possible ideas");
+        jLabel21.setText("Browse and take Notes via the Category Pane");
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jLabel22.setText("Get in touch with us via the Contact Form!");
 
         javax.swing.GroupLayout ResourcePLayout = new javax.swing.GroupLayout(ResourceP);
         ResourceP.setLayout(ResourcePLayout);
@@ -862,7 +941,9 @@ private void initializeButtonActions() {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(ResourcePLayout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(ResourcePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(23, Short.MAX_VALUE))
             .addGroup(ResourcePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(ResourcePLayout.createSequentialGroup()
@@ -875,7 +956,9 @@ private void initializeButtonActions() {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResourcePLayout.createSequentialGroup()
                 .addGap(62, 62, 62)
                 .addComponent(jLabel21)
-                .addGap(33, 33, 33)
+                .addGap(1, 1, 1)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(ResourcePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -891,22 +974,18 @@ private void initializeButtonActions() {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jButton1.setText("Create");
+        CreateCRUDb.setText("Create");
 
-        jButton2.setText("Read");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        ReadCRUDb.setText("Read");
+        ReadCRUDb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                ReadCRUDbActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Update");
+        UpdateCRUDb.setText("Update");
 
-        jButton4.setText("Delete");
-
-        jToggleButton2.setText("Back");
-
-        jToggleButton3.setText("Next");
+        DeleteCRUDb.setText("Delete");
 
         javax.swing.GroupLayout CategoryPLayout = new javax.swing.GroupLayout(CategoryP);
         CategoryP.setLayout(CategoryPLayout);
@@ -916,18 +995,14 @@ private void initializeButtonActions() {
                 .addGap(16, 16, 16)
                 .addGroup(CategoryPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(CategoryPLayout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(CreateCRUDb)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2))
-                    .addGroup(CategoryPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(ReadCRUDb))
+                    .addGroup(CategoryPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, CategoryPLayout.createSequentialGroup()
-                            .addComponent(jButton4)
+                            .addComponent(DeleteCRUDb)
                             .addGap(18, 18, 18)
-                            .addComponent(jButton3)
-                            .addGap(176, 176, 176)
-                            .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jToggleButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(UpdateCRUDb))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, CategoryPLayout.createSequentialGroup()
                             .addGap(15, 15, 15)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -940,14 +1015,12 @@ private void initializeButtonActions() {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
                 .addGroup(CategoryPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(CreateCRUDb)
+                    .addComponent(ReadCRUDb))
                 .addGap(18, 18, 18)
                 .addGroup(CategoryPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton3)
-                    .addComponent(jToggleButton2)
-                    .addComponent(jToggleButton3))
+                    .addComponent(DeleteCRUDb)
+                    .addComponent(UpdateCRUDb))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -979,7 +1052,7 @@ private void initializeButtonActions() {
         jLabel3.setText("Email:");
         ContactPanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 70, -1));
 
-        CFconfirmButton.setText("Comfirm");
+        CFconfirmButton.setText("Confirm");
         CFconfirmButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CFconfirmButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1804,9 +1877,9 @@ private void initializeButtonActions() {
         // TODO add your handling code here:
     }//GEN-LAST:event_CFconfirmButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void ReadCRUDbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReadCRUDbActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_ReadCRUDbActionPerformed
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         // TODO add your handling code here:
@@ -1863,6 +1936,7 @@ private void initializeButtonActions() {
 
     private void adminQuizConfirmBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminQuizConfirmBTNActionPerformed
         // TODO add your handling code here:
+        //method for admin quiz confirm button
          try {
         
         String correctOption = null;
@@ -1898,6 +1972,7 @@ private void initializeButtonActions() {
 
     private void quizPrevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizPrevBTNActionPerformed
         // TODO add your handling code here:
+        //quiz previous button method
         saveAnswer();
 
     if (currentQuestionIndex > 0) {
@@ -1910,6 +1985,8 @@ private void initializeButtonActions() {
 
     private void quizNextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizNextBTNActionPerformed
         // TODO add your handling code here:
+        //quiz next button method
+        
         saveAnswer();
 
    
@@ -1922,7 +1999,8 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_quizNextBTNActionPerformed
 
     private void quizSubmitBTN1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quizSubmitBTN1ActionPerformed
-         if (currentQuestions == null || currentQuestions.isEmpty()) {
+        //quiz submit button method
+        if (currentQuestions == null || currentQuestions.isEmpty()) {
         JOptionPane.showMessageDialog(this, "No questions loaded. Please select a topic.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
@@ -1930,7 +2008,7 @@ private void initializeButtonActions() {
     // Save the current answer
     saveAnswer();
 
-    // Check if it's the last question
+    // Check if its the last question
     if (currentQuestionIndex == currentQuestions.size() - 1) {
         // Finish the quiz
         finishQuiz();
@@ -1942,7 +2020,9 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_quizSubmitBTN1ActionPerformed
 
     private void submitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitTopicBTNActionPerformed
-      String selectedTopic = (String) topicCB.getSelectedItem();
+     
+        //submit topic button method
+        String selectedTopic = (String) topicCB.getSelectedItem();
 
     if (selectedTopic == null || selectedTopic.trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "Please select a valid topic.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1974,7 +2054,8 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_submitTopicBTNActionPerformed
 
     private void adminNextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminNextBTNActionPerformed
-         if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
+         //admin next button method
+        if (adminCurrentQuestionIndex < adminCurrentQuestions.size() - 1) {
         adminCurrentQuestionIndex++;
         adminLoadQuestion();
     } else {
@@ -1984,6 +2065,7 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminNextBTNActionPerformed
 
     private void adminPrevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminPrevBTNActionPerformed
+       //admin previous button method
         if (adminCurrentQuestionIndex > 0) {
         adminCurrentQuestionIndex--;
         adminLoadQuestion();
@@ -1993,9 +2075,10 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminPrevBTNActionPerformed
 
     private void adminUpdateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminUpdateBTNActionPerformed
-            if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
+        //admin update button method   
+        if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
         try {
-            // Get the updated question text (excluding options)
+            // Get the updated question text
             String updatedQuestionText = adminQuestionTA.getText().trim();
 
             if (updatedQuestionText.isEmpty()) {
@@ -2009,13 +2092,13 @@ private void initializeButtonActions() {
             // Update the question text
             currentQuestion.setText(updatedQuestionText);
 
-            // Prompt for new options using input dialogs
+            // gets the user to input answers for each radio button
             String optionA = JOptionPane.showInputDialog(this, "Enter option A:", currentQuestion.getOptionA());
             String optionB = JOptionPane.showInputDialog(this, "Enter option B:", currentQuestion.getOptionB());
             String optionC = JOptionPane.showInputDialog(this, "Enter option C:", currentQuestion.getOptionC());
             String optionD = JOptionPane.showInputDialog(this, "Enter option D:", currentQuestion.getOptionD());
 
-            // Validate the inputs
+            // validate the inputs
             if (optionA == null || optionA.trim().isEmpty() ||
                 optionB == null || optionB.trim().isEmpty() ||
                 optionC == null || optionC.trim().isEmpty() ||
@@ -2034,10 +2117,10 @@ private void initializeButtonActions() {
             String selectedTopic = (String) adminQuizCB.getSelectedItem();
             Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
 
-            // Refresh the admin UI once
+            // Refresh the admin UI 
             adminLoadQuestion();
 
-            // Show success message once
+            // success message
             JOptionPane.showMessageDialog(this, "Question updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
@@ -2050,7 +2133,7 @@ private void initializeButtonActions() {
 
     private void adminCreateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminCreateBTNActionPerformed
         try {
-        // Get the question text only
+        // Get the question text 
         String questionText = adminQuestionTA.getText().trim();
 
         if (questionText.isEmpty()) {
@@ -2058,13 +2141,13 @@ private void initializeButtonActions() {
             return;
         }
 
-        // Prompt for options using input dialogs
+        // gets the admin to put answers for the radio buttons
         String optionA = JOptionPane.showInputDialog(this, "Enter option A:");
         String optionB = JOptionPane.showInputDialog(this, "Enter option B:");
         String optionC = JOptionPane.showInputDialog(this, "Enter option C:");
         String optionD = JOptionPane.showInputDialog(this, "Enter option D:");
 
-        // Validate the inputs
+        // vlidate the inputs
         if (optionA == null || optionA.trim().isEmpty() ||
             optionB == null || optionB.trim().isEmpty() ||
             optionC == null || optionC.trim().isEmpty() ||
@@ -2098,9 +2181,10 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminCreateBTNActionPerformed
 
     private void adminDeleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminDeleteBTNActionPerformed
+       //admin delete button method
         if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
         try {
-            // Confirm deletion with the user
+            // Confirm deletion 
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this question?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) {
                 return; // User chose not to delete
@@ -2120,10 +2204,10 @@ private void initializeButtonActions() {
                 adminCurrentQuestionIndex = adminCurrentQuestions.size() - 1;
             }
 
-            // Refresh the admin UI to show the next available question
+            // Refresh the admin gui to show the next available question
             adminLoadQuestion();
 
-            // Inform the user of successful deletion
+            // delete success message
             JOptionPane.showMessageDialog(this, "Question deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
@@ -2135,12 +2219,13 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminDeleteBTNActionPerformed
 
     private void adminSubmitTopicBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSubmitTopicBTNActionPerformed
+       //admin submit topic method
         String selectedTopic = (String) adminQuizCB.getSelectedItem();
 
         System.out.println("Admin selected topic: " + selectedTopic);
 
         adminCurrentQuestions = Question.getQuestionsByTopic(selectedTopic);
-
+        //error message if not questions are available
         if (adminCurrentQuestions == null || adminCurrentQuestions.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No questions available for the selected topic.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -2159,6 +2244,7 @@ private void initializeButtonActions() {
     }//GEN-LAST:event_adminSubmitTopicBTNActionPerformed
 
     private void adminSubmitAnswerBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSubmitAnswerBTNActionPerformed
+        //admin submit answers buttons method
         if (adminCurrentQuestionIndex >= 0 && adminCurrentQuestionIndex < adminCurrentQuestions.size()) {
         try {
             String selectedAnswer = null;
@@ -2183,10 +2269,10 @@ private void initializeButtonActions() {
             String selectedTopic = (String) adminQuizCB.getSelectedItem();
             Question.saveQuestionsToFile(selectedTopic, adminCurrentQuestions);
 
-            // Refresh the admin UI to show the correct answer
+            // Refresh the admin gui to show the correct answer
             adminLoadQuestion();
 
-            // Show success message
+            // success message
             JOptionPane.showMessageDialog(this, "Correct answer set successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
@@ -2227,6 +2313,8 @@ private void initializeButtonActions() {
     private javax.swing.JPanel CategoryP;
     private javax.swing.JPanel ContactPanel;
     private javax.swing.JPanel CreateAccPanel;
+    private javax.swing.JButton CreateCRUDb;
+    private javax.swing.JButton DeleteCRUDb;
     private javax.swing.JTextField EmailInput;
     private javax.swing.JTextField Emailfield;
     public javax.swing.JPanel HomePanel;
@@ -2242,11 +2330,13 @@ private void initializeButtonActions() {
     private javax.swing.JPanel QuizPanel;
     private javax.swing.JPanel QuizPanel1;
     private javax.swing.JPanel QuizPanel3;
+    private javax.swing.JButton ReadCRUDb;
     private javax.swing.JPanel ResourceP;
     private javax.swing.JButton StartButton;
     private javax.swing.JPanel StartPanel;
     private javax.swing.JTabbedPane TabbedResource;
     private javax.swing.JTabbedPane TabbedResource1;
+    private javax.swing.JButton UpdateCRUDb;
     private javax.swing.JRadioButton aBTN;
     private javax.swing.JRadioButton adminABTN;
     private javax.swing.JTextArea adminAnswerTA;
@@ -2268,10 +2358,6 @@ private void initializeButtonActions() {
     private javax.swing.JRadioButton bBTN;
     private javax.swing.JRadioButton cBTN;
     private javax.swing.JRadioButton dBTN;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -2287,6 +2373,7 @@ private void initializeButtonActions() {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
@@ -2346,8 +2433,6 @@ private void initializeButtonActions() {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
     private GUIComponents.MainFrame mainFrame1;
     private javax.swing.ButtonGroup quizBG;
     private javax.swing.JButton quizNextBTN;

@@ -26,12 +26,7 @@ public class QuizTimer implements Serializable {
     private String topic;
     private Date dateTaken;
 
-    /**
-     * Constructs a QuizTimer object.
-     *
-     * @param timeTakenSeconds The time taken to complete the quiz in seconds.
-     * @param topic             The topic of the quiz.
-     */
+    
     public QuizTimer(int timeTakenSeconds, String topic) {
         this.timeTakenSeconds = timeTakenSeconds;
         this.topic = topic;

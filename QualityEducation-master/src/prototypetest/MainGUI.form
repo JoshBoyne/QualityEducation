@@ -620,7 +620,10 @@
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                                      <Component id="jLabel21" min="-2" pref="526" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel22" min="-2" pref="526" max="-2" attributes="0"/>
+                                          <Component id="jLabel21" min="-2" pref="526" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                               <EmptySpace pref="23" max="32767" attributes="0"/>
@@ -639,7 +642,9 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                               <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                              <Component id="jLabel22" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel4" pref="188" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -787,7 +792,15 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI Black" size="18" style="1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Placeholder for other links and possible ideas"/>
+                        <Property name="text" type="java.lang.String" value="Browse and take Notes via the Category Pane"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel22">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI Black" size="18" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Get in touch with us via the Contact Form!"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -808,19 +821,15 @@
                               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CreateCRUDb" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="ReadCRUDb" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                                          <Component id="DeleteCRUDb" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="176" max="-2" attributes="0"/>
-                                          <Component id="jToggleButton2" min="-2" pref="133" max="-2" attributes="0"/>
-                                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="jToggleButton3" max="32767" attributes="0"/>
+                                          <Component id="UpdateCRUDb" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -839,15 +848,13 @@
                               <Component id="jScrollPane1" min="-2" pref="182" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="CreateCRUDb" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="ReadCRUDb" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jToggleButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jToggleButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DeleteCRUDb" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="UpdateCRUDb" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="18" max="32767" attributes="0"/>
                           </Group>
@@ -870,37 +877,27 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="jButton1">
+                    <Component class="javax.swing.JButton" name="CreateCRUDb">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Create"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton2">
+                    <Component class="javax.swing.JButton" name="ReadCRUDb">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Read"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ReadCRUDbActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton3">
+                    <Component class="javax.swing.JButton" name="UpdateCRUDb">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Update"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton4">
+                    <Component class="javax.swing.JButton" name="DeleteCRUDb">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Delete"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JToggleButton" name="jToggleButton2">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Back"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JToggleButton" name="jToggleButton3">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Next"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -991,7 +988,7 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="CFconfirmButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Comfirm"/>
+                        <Property name="text" type="java.lang.String" value="Confirm"/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                             <LineBorder/>

@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//class for the results of the quiz
 public class Result {
+    //variables
     private int score;
     private int totalQuestions;
 
@@ -108,12 +110,4 @@ public class Result {
             System.err.println("Error saving results: " + e.getMessage());
         }
     }
-
-
-    
-    
-    //implement read/write for results
-    //connect results with user
-    //print question and result with users
-    
 }

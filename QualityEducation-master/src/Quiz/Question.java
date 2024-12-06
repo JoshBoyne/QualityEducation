@@ -23,12 +23,8 @@ import java.util.List;
  */
 
 
-/**
- *
- * @author Josh
- */
-
 public class Question implements Serializable {
+    //variables
     private static final long serialVersionUID = 1L; // Added for Serializable
     private String text;
     private String optionA;
@@ -96,7 +92,7 @@ public class Question implements Serializable {
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
-     // Method to get questions by topic
+     // method to get the questions by the topic
     public static List<Question> getQuestionsByTopic(String topic) {
     List<Question> questions;
     String filePath = getFilePath(topic);
@@ -104,7 +100,7 @@ public class Question implements Serializable {
 
     if (file.exists()) {
         System.out.println("Loading questions from file: " + file.getAbsolutePath());
-        // If file exists, load questions from file
+        // If file exists load questions  from file
         questions = loadQuestionsFromFile(topic);
         if (questions == null) {
             System.out.println("Failed to load questions from file. Initializing hardcoded questions.");
@@ -114,7 +110,7 @@ public class Question implements Serializable {
         }
     } else {
         System.out.println("Questions file not found. Initializing hardcoded questions and saving to file.");
-        // If file doesn't exist, use hardcoded questions and save them
+        // if the file doesnt exist, it loads the hardcoded questions instead
         questions = initializeHardcodedQuestions(topic);
         saveQuestionsToFile(topic, questions);
     }
@@ -122,11 +118,11 @@ public class Question implements Serializable {
     return questions;
 }
 
-    // Initialize hardcoded questions
+    // array list for hardcoded questions
     private static List<Question> initializeHardcodedQuestions(String topic) {
         List<Question> questions = new ArrayList<>();
 
-        switch (topic) {
+        switch (topic) {//maths questions
             case "Maths":
                 questions.add(new Question("What is 2 + 2?", "4", "3", "5", "2", "A"));
                 questions.add(new Question("What is 3 x 3?", "6", "9", "3", "12", "B"));
@@ -134,21 +130,21 @@ public class Question implements Serializable {
                 questions.add(new Question("What is 8 / 2?", "4", "6", "8", "2", "A"));
                 questions.add(new Question("What is 5 + 7?", "12", "10", "11", "13", "A"));
                 break;
-            case "Geography":
+            case "Geography"://geography questions
                 questions.add(new Question("What is the capital of France?", "Berlin", "Paris", "Rome", "Madrid", "B"));
                 questions.add(new Question("What is the capital of Germany?", "Berlin", "Vienna", "Warsaw", "Prague", "A"));
                 questions.add(new Question("What is the capital of Italy?", "Florence", "Venice", "Rome", "Milan", "C"));
                 questions.add(new Question("What is the capital of Spain?", "Barcelona", "Madrid", "Lisbon", "Valencia", "B"));
                 questions.add(new Question("What is the capital of Portugal?", "Porto", "Lisbon", "Madrid", "Seville", "B"));
                 break;
-            case "Space":
+            case "Space"://space questions
                 questions.add(new Question("Which planet is known as the Red Planet?", "Venus", "Mars", "Jupiter", "Saturn", "B"));
                 questions.add(new Question("Which planet is the largest in the solar system?", "Earth", "Neptune", "Jupiter", "Saturn", "C"));
                 questions.add(new Question("Which planet is closest to the Sun?", "Venus", "Mercury", "Earth", "Mars", "B"));
                 questions.add(new Question("Which planet has the most moons?", "Jupiter", "Saturn", "Uranus", "Neptune", "A"));
                 questions.add(new Question("Which planet is known for its rings?", "Mars", "Venus", "Saturn", "Jupiter", "C"));
                 break;
-            case "Science":
+            case "Science"://science questions
                 questions.add(new Question("What is the chemical symbol for water?", "H2O", "O2", "CO2", "HO2", "A"));
                 questions.add(new Question("What is the chemical symbol for oxygen?", "O", "O2", "O3", "H", "B"));
                 questions.add(new Question("What is the chemical symbol for carbon dioxide?", "CO", "CO2", "C2O", "O2", "B"));
@@ -167,7 +163,7 @@ public class Question implements Serializable {
         String filePath = getFilePath(topic);
         File file = new File(filePath);
 
-        // Ensure the directory exists
+        // makes sure the directory exists
         File parentDir = file.getParentFile();
         if (!parentDir.exists()) {
             if (parentDir.mkdirs()) {
@@ -194,7 +190,7 @@ public class Question implements Serializable {
         String filePath = getFilePath(topic);
         File file = new File(filePath);
 
-        if (!file.exists()) {
+        if (!file.exists()) {//file found for topic
             System.err.println("No questions file found for topic: " + topic);
             return null;
         }
@@ -203,14 +199,14 @@ public class Question implements Serializable {
              ObjectInputStream oStream = new ObjectInputStream(fStream)) {
             questions = (List<Question>) oStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error loading questions: " + e.getMessage());
+            System.err.println("Error loading questions: " + e.getMessage());//error loading the quesitons
             e.printStackTrace();
         }
 
         return questions;
     }
 
-   // Helper method to get the file path
+   // method to get the file path
     private static String getFilePath(String topic) {
         String projectDir = System.getProperty("user.dir");
         String filePath = projectDir + File.separator + "src" + File.separator + "quizdata" + File.separator + "questions_" + topic + ".dat";

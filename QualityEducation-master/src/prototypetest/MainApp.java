@@ -22,10 +22,8 @@ import Quiz.Question;
  */
 public class MainApp { 
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+  
+    public static void main(String[] args) {//main method
          java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
               
@@ -37,7 +35,7 @@ public class MainApp {
                 frame.setVisible(true);
                 
                 try {
-                    // Save questions to the new QuizData package
+                    // save the questions to the QuizData package
                     List<String> topics = List.of("Maths", "Geography", "Space", "Science");
                     for (String topic : topics) {
                         List<Question> questions = Question.getQuestionsByTopic(topic);
