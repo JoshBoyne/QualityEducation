@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Main;
 
 import java.util.List;
@@ -9,21 +5,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Owen
- */
+//Class contains daily quests and questions for the user
 public class Questions {
     
-    public static Map<String, String> questions = new HashMap<>();
+    //Variables
+    public static Map<String, String> questions = new HashMap<>();//Map containing questions and awnsers
     
-    // Maps for daily quests for different topics
+    //Maps for daily quests for different topics
     public static Map<String, Boolean> dailyMathsQuest = new HashMap<>();
     public static Map<String, Boolean> dailyScienceQuest = new HashMap<>();
     public static Map<String, Boolean> dailyGeographyQuest = new HashMap<>();
     public static Map<String, Boolean> dailyPlanetsQuest = new HashMap<>();
     
+    //Constructor putting questions into the maps
     public Questions() {
+        
+        //Daily Questions
         questions.put("What is the default value of an int variable in Java?", "0");
         questions.put("Which method is used to start a thread in Java?", "start()");
         questions.put("What is the size of a char in Java?", "2 bytes");
@@ -35,7 +32,7 @@ public class Questions {
         questions.put("What is the default value of a reference variable in Java?", "null");
         questions.put("Which method is used to get the length of an array in Java?", "length");
         
-        // Populate daily quests for each topic
+        //Daily Quests
         dailyMathsQuest.put("<html><body style='width: 100%; text-align: center;'>Complete the daily maths quiz</body></html>", false);
         dailyScienceQuest.put("<html><body style='width: 100%; text-align: center;'>Complete the daily science quiz</body></html>", false);
         dailyGeographyQuest.put("<html><body style='width: 100%; text-align: center;'>Complete the daily geography quiz</body></html>", false);
@@ -43,6 +40,7 @@ public class Questions {
 
     }
     
+    //If needed to clear and repopulate question bank
     private void populateQuestions() {
         questions.clear();
         questions.put("What is the default value of an int variable in Java?", "0");
@@ -55,26 +53,24 @@ public class Questions {
         questions.put("What is the purpose of the 'super' keyword in Java?", "To refer to the superclass");
         questions.put("What is the default value of a reference variable in Java?", "null");
         questions.put("Which method is used to get the length of an array in Java?", "length");
-
     }
     
-    int qotd;
+    //Get question of the day - returns string array of question, awnser
+    int qotd;//Index of question of the day
     public String[] getQOTD() {
-        List<Map.Entry<String, String>> entryList = new ArrayList<>(questions.entrySet());
-        qotd = Styles.RngGenerator(entryList.size());
-        Map.Entry<String, String> q = entryList.get(qotd);
-        System.out.println("Question: "+q.getKey());
-        System.out.println("Ans: "+q.getValue());
+        ArrayList<Map.Entry<String, String>> entryList = new ArrayList<>(questions.entrySet());//Array list of the q and a combo maps
+        qotd = Styles.RngGenerator(entryList.size());//Random index
+        Map.Entry<String, String> q = entryList.get(qotd);//Grabbing the q and a object
         return new String[] {q.getKey(), q.getValue()};
     }
     
+    //Getting three more incorrect awnsers
     public String[] getPossibleAns() {
-        List<Map.Entry<String, String>> entryList = new ArrayList<>(questions.entrySet());
-        String[] ans = new String[3];
-        for(int i = 0; i < 3; i++) {
-            int index = Styles.RngGenerator(entryList.size());
-            //Rerolling if the q selected is the qotd
-            while(index == qotd) {
+        List<Map.Entry<String, String>> entryList = new ArrayList<>(questions.entrySet());//Same thing again with the List of Map entries
+        String[] ans = new String[3];//Array to return
+        for(int i = 0; i < 3; i++) {//Run three times
+            int index = Styles.RngGenerator(entryList.size());//New random index
+            while(index == qotd) {//Rerolling if the q selected is the qotd
                 index = Styles.RngGenerator(entryList.size());
             }
             ans[i] = entryList.get(index).getValue();
@@ -84,13 +80,10 @@ public class Questions {
        //Resseting the questions removed from the list
        populateQuestions();
         
-        return ans;
+       return ans;
     }
     
-    //////////////////////////////////////////////////////////////
-    ////                    DAILY QUESTS                      ////
-    //////////////////////////////////////////////////////////////
-    
+    //Get daily quests for the user
     public String[] getDailyQuests() {
         //Create an array to hold the quest strings
         String[] dailyQuests = new String[4];
@@ -103,5 +96,4 @@ public class Questions {
         
         return dailyQuests;
     }
-
 }
