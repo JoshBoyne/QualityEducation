@@ -220,19 +220,14 @@ public class Account implements Serializable {
         }
     }
     
+    //Set the user's goal count
     public void setGoalCount(int goal, int subject) {
          if (subject >= 0 && subject <=4) {
              goalCount[subject] = goal;
          } 
-         else {
-           //  System.out.println("wrong subject int passed");
-         }
     }
-    
-    public void setGoals(String subject, Home home) {
-       //home.mainFrame1.getCenterPanel().getDetailsPanel().
-    }
-//Getters
+
+    //Getters
     public String getName() {
         return name;
     }
@@ -256,9 +251,4 @@ public class Account implements Serializable {
     public Planets getPlanets() {
         return planets;
     }
-    
-    
-    
 }
-//Set up filepath to .sr for saving the object instance
-//Create method for saving
