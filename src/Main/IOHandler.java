@@ -1,6 +1,5 @@
 package Main;
 
-import java.awt.List;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -33,7 +32,6 @@ public class IOHandler {
         return null;
     }
     
-    
     //For initializing new accounts so they have a folder and files. Takes the user's name as an arguemnt.
     public static String makeAccountDir(String name) throws IOException {
         
@@ -58,32 +56,29 @@ public class IOHandler {
         return null;
     }
     
-    
     //Method to control the logic for when a user logs in. Will check if the user has already logged in today. If yes - regular login. If no - refresh daily data. Recieves the user's file path and Account object. 
-
-
-public static boolean dailyLogin(File dir, Account user) throws IOException {
+    public static boolean dailyLogin(File dir, Account user) throws IOException {
     ArrayList<String> loginDates = new ArrayList<>(); // User's logins in an Array. Used for calculating login streak colors.
 
-    // Dynamically determine the project's base directory
-    File projectBaseDir = new File("").getAbsoluteFile(); // Base directory of the project
-    dir = new File(projectBaseDir, "src/Users/Owen"); // Adjust relative path based on project structure
+    //Get the source directory base directory
+    File projectBaseDir = new File("").getAbsoluteFile(); //Source directory.
+    dir = new File(projectBaseDir, "src/Users/"+user.getName());
 
-    // Ensure the directory exists
+    //Check directory exists
     if (!dir.exists() || !dir.isDirectory()) {
         throw new IOException("Directory does not exist: " + dir.getAbsolutePath());
     }
 
-    // Getting the user's login file
+    //Get the user's login file
     File loginFile = new File(dir, "login.txt");
     BufferedReader reader = new BufferedReader(new FileReader(loginFile));
     BufferedWriter writer = new BufferedWriter(new FileWriter(loginFile, true));
 
-    // Get the current date
+    //Get the current date
     LocalDate currentDate = LocalDate.now();
     String today = currentDate.toString();
 
-    // Read the existing login dates into the ArrayList
+    //Checking if user already logged in today
     String line;
     boolean alreadyLoggedIn = false;
     while ((line = reader.readLine()) != null) {
@@ -95,55 +90,55 @@ public static boolean dailyLogin(File dir, Account user) throws IOException {
     }
     reader.close();
 
-    // If the user hasn't logged in today, write the date to the file and update the list
+    ///////////////////////////////////////////////////////////
+    //If the user has not logged in today, this code exectues//
+    ///////////////////////////////////////////////////////////
+    
+    //If the user hasn't logged in today, write the date to the file and update the list
     if (!alreadyLoggedIn) {
-        //loginDates.add(today); // Add today to the in-memory list
-        //writer.write(today);
-        //writer.newLine();
-        //writer.close();
+        loginDates.add(today);
+        writer.write(today);
+        writer.newLine();
+        writer.close();
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Refresh QOTD. These are used within the updateUI method of the Account class, and come from the Questions class. Questions -> IOHandler -> Account
-    Styles.setUser(user); // Setting global user reference
-    user.qotd = q.getQOTD(); // Loading QOTD and its answer into the user.
-    user.ans = q.getPossibleAns(); // Loading 3 other incorrect answers into the user.
-    System.out.println("debugging in io handler 110, "+user.qotdAwnsered);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Refresh QOTD. These are used within the updateUI method of the Account class, and come from the Questions class. Questions -> IOHandler -> Account//
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Styles.setUser(user); //Setting global user reference
+    user.qotd = q.getQOTD(); //Loading QOTD and its answer into the user.
+    user.ans = q.getPossibleAns(); //Loading 3 other incorrect answers into the user.
     user.qotdAwnsered = false;
-    System.out.println("debugging in io handler 113, "+user.qotdAwnsered);
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Refresh Daily Quests
+    
+    ////////////////////////
+    //Refresh Daily Quests//
+    ////////////////////////
+    
     user.dailyQuests = q.getDailyQuests();
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    /////////////////
+    //Update Streak//
+    /////////////////
+    
+    LocalDate startOfStreak = currentDate.minusDays(6); //Start checking 6 days before today
+    int[] loginBools = new int[7]; //Array to store login status for the past week
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Update Streak
-    LocalDate startOfStreak = currentDate.minusDays(6); // Start checking 6 days before today
-    int[] loginBools = new int[7]; // Array to store login status for the past 7 days
-
-    // Iterate through the past 7 days
+    //Iterate through the past 7 days
     for (int i = 0; i < 7; i++) {
-        String dateToCheck = startOfStreak.plusDays(i).toString(); // Get the date as a string
-        if (loginDates.contains(dateToCheck)) { // Check if the date is in loginDates
-            loginBools[i] = 1; // Mark as logged in
+        String dateToCheck = startOfStreak.plusDays(i).toString(); //Get the date as a string
+        if (loginDates.contains(dateToCheck)) { //Check if the date is in loginDates
+            loginBools[i] = 1; //Mark as logged in
         } else {
-            loginBools[i] = 0; // Mark as missed login
+            loginBools[i] = 0; //Mark as missed login
         }
     }
 
-    user.logins = loginBools; // Pass the bools back to the user
+    user.logins = loginBools; //Pass the bools back to the user
 
-    // Debugging: Print the results for verification
-   // for (int i = 0; i < loginBools.length; i++) 
-        //System.out.println("Date: " + startOfStreak.plusDays(i) + " Login: " + loginBools[i]);
-
-    return true; // Return true once the method finishes executing
+    return true; //Return true once the method finishes executing
 }
-
-
-    
+ 
     //Saving the state of an account object to a serial file to allow data to persist over sessions
     public static void saveState(Account user) throws FileNotFoundException, IOException {
         
