@@ -3,15 +3,21 @@ package GUIComponents;
 import Main.Styles;
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.border.LineBorder;
 
+
+//This is the primary center panel in the main container's layout. It holds the QOTD, Streaks, and Details components.
 public class CenterPanel extends JPanel {
-Dimension dimensions = new Dimension(595, 490);
-private StreakContainer streakContainer;
-private QotdPanel qotdPanel;
-private DetailsPanel detailsPanel;
-    public CenterPanel(MainFrame home) {
-        //Formatting Container Panel
+    
+    //Variables
+    private Dimension dimensions = new Dimension(595, 490);
+    private StreakContainer streakContainer;
+    private QotdPanel qotdPanel;
+    private DetailsPanel detailsPanel;
+    
+    //Constructor
+    public CenterPanel(MainPanel home) {//Passing home for access to the rest of the app. 
+        
+        //Formatting this Panel
         this.setPreferredSize(dimensions);
         this.setMaximumSize(dimensions);
         this.setBackground(Styles.greyBackground);
@@ -21,26 +27,23 @@ private DetailsPanel detailsPanel;
         qotdPanel = new QotdPanel();
         this.add(qotdPanel, BorderLayout.NORTH);
 
-        //Adding center panel for streak in BorderLayout.Center
-        JPanel temp = new JPanel();
-        temp.setPreferredSize(new Dimension(595, 30));
-        temp.setMaximumSize(new Dimension(595, 30));
-       // temp.setBackground(Color.blue);
+        //Container for streak in center section.
+        JPanel cont = new JPanel();
+        cont.setPreferredSize(new Dimension(595, 30));
+        cont.setMaximumSize(new Dimension(595, 30));
+        
+        //New StreakContainer for BarClass Instances
         streakContainer = new StreakContainer();
-        temp.add(streakContainer);
-        this.add(temp, BorderLayout.CENTER);
+        cont.add(streakContainer);
+        this.add(cont, BorderLayout.CENTER);
 
-
-
-        //South Panel
-        //Account Details
-        detailsPanel = new DetailsPanel(home);
+        //DetailsPanel for account details in south section.
+        detailsPanel = new DetailsPanel();
         this.add(detailsPanel, BorderLayout.SOUTH);
         this.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-       // this.setBorder(new LineBorder(Color.black, 2));
-        System.out.println(this.getSize());
     }
     
+    //Getters - for accessing parts of the GUI for dynamic updating - Account.UpdateUI.
     public QotdPanel getQotdPanel() {
         return this.qotdPanel;
     }

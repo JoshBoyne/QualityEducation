@@ -1,14 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Main;
 
 import GUIComponents.BarClass;
 import GUIComponents.CustomButton;
 import GUIComponents.DailyQuestPanel;
-import GUIComponents.MainFrame;
-import GUIComponents.QotdPanel;
 import Subjects.Geography;
 import Subjects.Maths;
 import Subjects.Planets;
@@ -27,10 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import prototypetest.Home;
 
-/**
- *
- * @author owen
- */
+//User Account Class
 public class Account implements Serializable {
    
     //Variable Decleration
@@ -60,9 +51,12 @@ public class Account implements Serializable {
     private Science science;
     private Geography geography;
     private Planets planets;
+    
+    public boolean qotdAwnsered = false;
    
     //Constructor.
     public Account(String name, String pass) throws IOException {
+        
         //Creating subjects.
         this.maths = new Maths(0);
         this.science = new Science(0);
@@ -86,6 +80,8 @@ public class Account implements Serializable {
     public void saveState() throws IOException {
         IOHandler.saveState(this);
     }
+    
+    String guess = "";
     
     //Primary method of UI population. As the tracker UI is heavily dynamic, most of its content relies on this class, and that content changes. 
     //Again, all of the data being set here is reassigned to the class each new day via the login method.
@@ -143,11 +139,16 @@ public class Account implements Serializable {
               button.addActionListener(new ActionListener() {
                   @Override
                   public void actionPerformed(ActionEvent e) {
+                      guess = button.getText();
+                      qotdAwnsered = true;
                       checkAns(button.getText(), home);//Calls the check awnser method in this class. Passes the awnser, and the instance of the home panel.
                   }
               });
             }
         }
+
+        if(this.qotdAwnsered)     
+            checkAns(guess, home);
         
         //////////////////////////////////////////////////////////////////////
         ////            LOGIC FOR THE STREAK BOXES HERE                   ////
@@ -180,10 +181,6 @@ public class Account implements Serializable {
        geography.getContent().setText(dailyQuests[2]);
        planets.getContent().setText(dailyQuests[3]);
        
-       //
-       // STILL NEED TO ADD FUNCTIONALITY TO CHECK IF DAILY QUEST IS COMPLETE
-       //
-       
         //////////////////////////////////////////////////////////////////////
         ////            LOGIC FOR DETAILS SECTION HERE                    ////
         //////////////////////////////////////////////////////////////////////
@@ -194,21 +191,26 @@ public class Account implements Serializable {
         
     }
     
+    //Check if the user's awnser to the qotd is correct
     private void checkAns(String ansr, Home home) {
+        qotdAwnsered = true;//user has awnsered the question, so remember awnser
+        
+        //Accessing the buttons
         Component[] components = home.mainFrame1.getCenterPanel().getQotdPanel().getButtons().getComponents();
         JLabel qotdPanel = home.mainFrame1.getCenterPanel().getQotdPanel().getQuestion();
         //Remove all the action listeners so the user can't guess again
         for(Component comp : components) {
-            if(comp instanceof JButton) {
-                JButton button = (JButton) comp;
+            if(comp instanceof CustomButton) {
+                CustomButton button = (CustomButton) comp;
                 for (ActionListener listener : button.getActionListeners()) {
                     button.removeActionListener(listener);
                      
                 }
+                //If the button has the correct awnser
+                if(button.getText() == this.qotd[1])
+                    button.setColor(Color.green);
             }
         }
-       // System.out.println("ans: "+ansr);
-       // System.out.println("ans 2: "+ans[1]);
         //If correct
         if(ansr.equals(this.qotd[1])) {
              qotdPanel.setBackground(Color.green);
@@ -216,7 +218,6 @@ public class Account implements Serializable {
         else {
             qotdPanel.setBackground(Color.red);
         }
-  
     }
     
     public void setGoalCount(int goal, int subject) {

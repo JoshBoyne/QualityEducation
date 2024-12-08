@@ -3,9 +3,13 @@ package GUIComponents;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
+//Class for having a rounded border on components
 public class RoundedBorder extends AbstractBorder {
+    
+    //Variables
     private int radius;
 
+    //Constructor - takes radius desire of corners
     public RoundedBorder(int radius) {
         this.radius = radius;
     }

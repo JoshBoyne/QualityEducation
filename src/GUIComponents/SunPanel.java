@@ -6,31 +6,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+//Panel to hold the sun image
 public class SunPanel extends JPanel {
-    BufferedImage sun = IOHandler.loadImage("../Resources/sun.png");
+    
+    //Variables
+    private BufferedImage sun = IOHandler.loadImage("../Resources/sun.png");
+   
+    //Constructor
     public SunPanel() {
-
-        //this.setBackground(Color.black);
         this.setPreferredSize(new Dimension(50, 50));
         this.setMaximumSize(new Dimension(50, 50));
-
-
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);  // Correct: Calls the superclass method for proper background rendering
-
-        // Check if the image is loaded
+        super.paintComponent(g);
         if (sun != null) {
-            // Draw the image at position (0, 0) with size 50x50
             g.drawImage(sun, 0, 0, 50, 50, this);
         } else {
-            // If the image is not loaded, show an error message or a placeholder
+            
             g.setColor(Color.RED);
-            g.fillRect(0, 0, 50, 50);  // Draw a red rectangle as a placeholder
+            g.fillRect(0, 0, 50, 50); 
             g.setColor(Color.BLACK);
-            g.drawString("Image not found", 5, 25);  // Display an error message
+            g.drawString("Image not found", 5, 25);
         }
     }
 
