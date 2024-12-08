@@ -32,9 +32,9 @@
     <Property name="useNullLayout" type="boolean" value="false"/>
   </Layout>
   <SubComponents>
-    <Component class="GUIComponents.MainFrame" name="mainFrame1">
+    <Component class="GUIComponents.MainPanel" name="mainFrame1">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new GUIComponents.MainFrame(this)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new GUIComponents.MainPanel(this)"/>
         <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="mainFrame1.setVisible(false);"/>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>

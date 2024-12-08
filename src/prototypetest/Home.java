@@ -26,7 +26,7 @@ public class Home extends javax.swing.JPanel {
     //public Account user;
     public Home() {
         initComponents();
-       
+        System.out.println(mainFrame1);
        
         RManager rManager = new RManager(); //instance of RManager
          rManager.enableLinkLabel(LinkLabel, "https://www.globalgoals.org/goals/4-quality-education/");//link for RManager in ResourceP
@@ -48,7 +48,7 @@ public class Home extends javax.swing.JPanel {
 
         quizBG = new javax.swing.ButtonGroup();
         adminQuizBG = new javax.swing.ButtonGroup();
-        mainFrame1 = new GUIComponents.MainFrame(this);
+        mainFrame1 = new GUIComponents.MainPanel(this);
         StartPanel = new javax.swing.JPanel();
         IconP = new javax.swing.JPanel();
         Bicon = new javax.swing.JLabel();
@@ -1610,7 +1610,7 @@ public class Home extends javax.swing.JPanel {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
-    public GUIComponents.MainFrame mainFrame1;
+    public GUIComponents.MainPanel mainFrame1;
     private javax.swing.ButtonGroup quizBG;
     private javax.swing.JButton quizNextBTN;
     private javax.swing.JButton quizPrevBTN;
